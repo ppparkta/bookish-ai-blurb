@@ -28,7 +28,8 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
     totalPages: "",
     thoughts: "",
     favoriteQuote: "",
-    wouldRecommend: true
+    wouldRecommend: true,
+    generatedReview: ""
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();

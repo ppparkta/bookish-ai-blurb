@@ -1,12 +1,20 @@
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Clock, CheckCircle, Edit3 } from "lucide-react";
+import { BookOpen, Clock, CheckCircle, Edit3, TrendingUp } from "lucide-react";
+import ProgressUpdateModal from "./ProgressUpdateModal";
+import ReadingChart from "./ReadingChart";
 
 const BookShelf = () => {
+  const navigate = useNavigate();
+  const [selectedBook, setSelectedBook] = useState<any>(null);
+  const [showChart, setShowChart] = useState<number | null>(null);
+
   // Mock data for user's books
-  const userBooks = [
+  const [userBooks, setUserBooks] = useState([
     {
       id: 1,
       title: "달러구트 꿈 백화점",
@@ -43,7 +51,45 @@ const BookShelf = () => {
       rating: null,
       reviewPreview: null
     }
-  ];
+  ]);
+
+  // Mock reading history data
+  const getReadingHistory = (bookId: number) => {
+    const mockHistories: { [key: number]: any[] } = {
+      1: [
+        { date: "1/1", page: 50, progress: 18 },
+        { date: "1/3", page: 120, progress: 42 },
+        { date: "1/5", page: 200, progress: 70 },
+        { date: "1/7", page: 284, progress: 100 }
+      ],
+      2: [
+        { date: "1/10", page: 80, progress: 25 },
+        { date: "1/12", page: 150, progress: 47 },
+        { date: "1/14", page: 208, progress: 65 }
+      ]
+    };
+    return mockHistories[bookId] || [];
+  };
+
+  const handleProgressUpdate = (bookId: number, newPage: number) => {
+    setUserBooks(books => 
+      books.map(book => 
+        book.id === bookId 
+          ? { 
+              ...book, 
+              currentPage: newPage, 
+              progress: Math.round(newPage / book.totalPages * 100),
+              status: newPage === book.totalPages ? "completed" : book.status
+            }
+          : book
+      )
+    );
+    setSelectedBook(null);
+  };
+
+  const handleReviewWrite = (book: any) => {
+    navigate('/review-write', { state: { book } });
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -70,71 +116,102 @@ const BookShelf = () => {
         <CardContent className="p-6">
           <div className="grid gap-6">
             {userBooks.map((book) => (
-              <div
-                key={book.id}
-                className="bg-white/30 backdrop-blur-sm rounded-xl p-6 hover:bg-white/40 transition-all duration-300"
-              >
-                <div className="flex gap-6">
-                  <img
-                    src={book.cover}
-                    alt={book.title}
-                    className="w-20 h-28 object-cover rounded-lg shadow-lg"
-                  />
-                  <div className="flex-1 space-y-3">
-                    <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-bold text-white text-xl">{book.title}</h3>
-                        {getStatusBadge(book.status)}
-                      </div>
-                      <p className="text-white/80">{book.author}</p>
-                    </div>
-
-                    {book.status !== "wishlist" && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm text-white/80">
-                          <span>읽기 진행률</span>
-                          <span>{book.currentPage} / {book.totalPages} 페이지 ({book.progress}%)</span>
+              <div key={book.id}>
+                <div className="bg-white/30 backdrop-blur-sm rounded-xl p-6 hover:bg-white/40 transition-all duration-300">
+                  <div className="flex gap-6">
+                    <img
+                      src={book.cover}
+                      alt={book.title}
+                      className="w-20 h-28 object-cover rounded-lg shadow-lg"
+                    />
+                    <div className="flex-1 space-y-3">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="font-bold text-white text-xl">{book.title}</h3>
+                          {getStatusBadge(book.status)}
                         </div>
-                        <div className="w-full bg-white/20 rounded-full h-2">
-                          <div
-                            className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full transition-all duration-500"
-                            style={{ width: `${book.progress}%` }}
-                          ></div>
+                        <p className="text-white/80">{book.author}</p>
+                      </div>
+
+                      {book.status !== "wishlist" && (
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm text-white/80">
+                            <span>읽기 진행률</span>
+                            <span>{book.currentPage} / {book.totalPages} 페이지 ({book.progress}%)</span>
+                          </div>
+                          <div className="w-full bg-white/20 rounded-full h-2">
+                            <div
+                              className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${book.progress}%` }}
+                            ></div>
+                          </div>
                         </div>
-                      </div>
-                    )}
-
-                    {book.reviewPreview && (
-                      <div className="bg-white/20 rounded-lg p-3">
-                        <p className="text-white/90 text-sm italic">"{book.reviewPreview}"</p>
-                      </div>
-                    )}
-
-                    <div className="flex gap-2">
-                      {book.status === "wishlist" && (
-                        <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-                          읽기 시작
-                        </Button>
                       )}
-                      {book.status === "reading" && (
-                        <Button className="bg-orange-500 hover:bg-orange-600 text-white">
-                          진행률 업데이트
-                        </Button>
+
+                      {book.reviewPreview && (
+                        <div className="bg-white/20 rounded-lg p-3">
+                          <p className="text-white/90 text-sm italic">"{book.reviewPreview}"</p>
+                        </div>
                       )}
-                      {(book.status === "completed" || book.reviewPreview) && (
-                        <Button className="bg-purple-500 hover:bg-purple-600 text-white">
+
+                      <div className="flex gap-2 flex-wrap">
+                        {book.status === "wishlist" && (
+                          <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+                            읽기 시작
+                          </Button>
+                        )}
+                        {book.status === "reading" && (
+                          <>
+                            <Button 
+                              onClick={() => setSelectedBook(book)}
+                              className="bg-orange-500 hover:bg-orange-600 text-white"
+                            >
+                              진행률 업데이트
+                            </Button>
+                            <Button
+                              onClick={() => setShowChart(showChart === book.id ? null : book.id)}
+                              className="bg-purple-500 hover:bg-purple-600 text-white"
+                            >
+                              <TrendingUp className="w-4 h-4 mr-2" />
+                              진행률 그래프
+                            </Button>
+                          </>
+                        )}
+                        <Button 
+                          onClick={() => handleReviewWrite(book)}
+                          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                        >
                           <Edit3 className="w-4 h-4 mr-2" />
-                          독후감 {book.status === "completed" ? "수정" : "작성"}
+                          독후감 작성
                         </Button>
-                      )}
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                {/* Reading Progress Chart */}
+                {showChart === book.id && book.status !== "wishlist" && (
+                  <div className="mt-4">
+                    <ReadingChart 
+                      bookTitle={book.title}
+                      history={getReadingHistory(book.id)}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
+
+      {/* Progress Update Modal */}
+      {selectedBook && (
+        <ProgressUpdateModal
+          book={selectedBook}
+          onClose={() => setSelectedBook(null)}
+          onUpdate={handleProgressUpdate}
+        />
+      )}
     </div>
   );
 };
