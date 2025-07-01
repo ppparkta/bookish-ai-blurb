@@ -16,7 +16,7 @@ interface ReadingChartProps {
 
 const ReadingChart = ({ bookTitle, history }: ReadingChartProps) => {
   return (
-    <Card className="bg-white/20 backdrop-blur-lg border-0 shadow-xl">
+    <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl">
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
           <TrendingUp className="w-5 h-5" />
@@ -27,7 +27,7 @@ const ReadingChart = ({ bookTitle, history }: ReadingChartProps) => {
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={history}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.2)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
               <XAxis 
                 dataKey="date" 
                 stroke="rgba(255,255,255,0.8)"
@@ -41,10 +41,10 @@ const ReadingChart = ({ bookTitle, history }: ReadingChartProps) => {
               />
               <Tooltip 
                 contentStyle={{
-                  backgroundColor: 'rgba(255,255,255,0.9)',
-                  border: 'none',
+                  backgroundColor: 'rgba(0,0,0,0.9)',
+                  border: '1px solid rgba(255,255,255,0.2)',
                   borderRadius: '8px',
-                  color: '#333'
+                  color: '#fff'
                 }}
                 formatter={(value: number) => [`${value}%`, '완독률']}
                 labelFormatter={(label) => `날짜: ${label}`}
@@ -52,10 +52,10 @@ const ReadingChart = ({ bookTitle, history }: ReadingChartProps) => {
               <Line 
                 type="monotone" 
                 dataKey="progress" 
-                stroke="#8b5cf6" 
+                stroke="#ffffff" 
                 strokeWidth={3}
-                dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, fill: '#a855f7' }}
+                dot={{ fill: '#ffffff', strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, fill: '#e5e5e5' }}
               />
             </LineChart>
           </ResponsiveContainer>
