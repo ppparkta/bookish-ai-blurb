@@ -43,7 +43,7 @@ const BookShelf = () => {
       totalPages: 320,
       currentPage: 208,
       rating: null,
-      reviewPreview: "인생의 선택에 대해 깊이 생각해보게 되는...",
+      reviewPreview: null,
       completedDate: null
     },
     {
@@ -148,6 +148,22 @@ const BookShelf = () => {
     );
   };
 
+  const handleMarkCompleted = (bookId: number) => {
+    setUserBooks(books => 
+      books.map(book => 
+        book.id === bookId 
+          ? { 
+              ...book, 
+              status: "completed", 
+              progress: 100,
+              currentPage: book.totalPages,
+              completedDate: new Date().toISOString().split('T')[0]
+            }
+          : book
+      )
+    );
+  };
+
   const handleReviewWrite = (book: any) => {
     navigate('/review-write', { state: { book } });
   };
@@ -155,11 +171,11 @@ const BookShelf = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "completed":
-        return <Badge className="bg-green-500/20 text-green-400 border border-green-500/30"><CheckCircle className="w-3 h-3 mr-1" />완독</Badge>;
+        return <Badge className="bg-green-500/20 text-green-600 border border-green-500/30"><CheckCircle className="w-3 h-3 mr-1" />완독</Badge>;
       case "reading":
-        return <Badge className="bg-blue-500/20 text-blue-400 border border-blue-500/30"><Clock className="w-3 h-3 mr-1" />읽는 중</Badge>;
+        return <Badge className="bg-blue-500/20 text-blue-600 border border-blue-500/30"><Clock className="w-3 h-3 mr-1" />읽는 중</Badge>;
       case "wishlist":
-        return <Badge className="bg-gray-500/20 text-gray-400 border border-gray-500/30"><BookOpen className="w-3 h-3 mr-1" />읽고 싶은</Badge>;
+        return <Badge className="bg-gray-500/20 text-gray-600 border border-gray-500/30"><BookOpen className="w-3 h-3 mr-1" />읽고 싶은</Badge>;
       default:
         return null;
     }
@@ -174,20 +190,20 @@ const BookShelf = () => {
             className={`w-4 h-4 ${
               star <= rating
                 ? "fill-yellow-400 text-yellow-400"
-                : "text-gray-600"
+                : "text-gray-400"
             }`}
           />
         ))}
-        <span className="text-white/80 text-sm ml-1">{rating}</span>
+        <span className="text-gray-700 text-sm ml-1">{rating}</span>
       </div>
     );
   };
 
   return (
     <div className="space-y-6">
-      <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl">
+      <Card className="bg-black/5 backdrop-blur-xl border border-black/10 shadow-2xl">
         <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
+          <CardTitle className="text-gray-800 flex items-center gap-2">
             <BookOpen className="w-5 h-5" />
             내 서재 ({filteredAndSortedBooks.length}권)
           </CardTitle>
@@ -196,30 +212,30 @@ const BookShelf = () => {
           {/* 검색 및 필터 */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
               <Input
                 placeholder="책 제목으로 검색..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-white/40"
+                className="pl-10 bg-black/5 border-black/20 text-gray-800 placeholder:text-gray-500 focus:border-black/40"
               />
             </div>
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-full md:w-48 bg-white/5 border-white/20 text-white">
+              <SelectTrigger className="w-full md:w-48 bg-black/5 border-black/20 text-gray-800">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-white/20">
+              <SelectContent className="bg-white border-black/20">
                 <SelectItem value="completedDate">완독시점 역순</SelectItem>
                 <SelectItem value="progress">읽기 진행률 순</SelectItem>
                 <SelectItem value="rating">별점 순</SelectItem>
               </SelectContent>
             </Select>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-full md:w-32 bg-white/5 border-white/20 text-white">
+              <SelectTrigger className="w-full md:w-32 bg-black/5 border-black/20 text-gray-800">
                 <Filter className="w-4 h-4 mr-2" />
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-white/20">
+              <SelectContent className="bg-white border-black/20">
                 <SelectItem value="all">전체</SelectItem>
                 <SelectItem value="completed">완독</SelectItem>
                 <SelectItem value="reading">읽는중</SelectItem>
@@ -232,7 +248,7 @@ const BookShelf = () => {
           <div className="grid gap-6">
             {filteredAndSortedBooks.map((book) => (
               <div key={book.id}>
-                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 hover:bg-white/10 transition-all duration-300 border border-white/10">
+                <div className="bg-black/5 backdrop-blur-sm rounded-xl p-6 hover:bg-black/10 transition-all duration-300 border border-black/10">
                   <div className="flex gap-6">
                     <img
                       src={book.cover}
@@ -242,10 +258,10 @@ const BookShelf = () => {
                     <div className="flex-1 space-y-3">
                       <div>
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-bold text-white text-xl">{book.title}</h3>
+                          <h3 className="font-bold text-gray-800 text-xl">{book.title}</h3>
                           {getStatusBadge(book.status)}
                         </div>
-                        <p className="text-gray-400">{book.author}</p>
+                        <p className="text-gray-600">{book.author}</p>
                         {book.rating && (
                           <div className="mt-2">
                             {renderStarRating(book.rating)}
@@ -255,13 +271,13 @@ const BookShelf = () => {
 
                       {book.status !== "wishlist" && (
                         <div className="space-y-2">
-                          <div className="flex justify-between text-sm text-gray-400">
+                          <div className="flex justify-between text-sm text-gray-600">
                             <span>읽기 진행률</span>
                             <span>{book.currentPage} / {book.totalPages} 페이지 ({book.progress}%)</span>
                           </div>
-                          <div className="w-full bg-white/10 rounded-full h-2">
+                          <div className="w-full bg-black/10 rounded-full h-2">
                             <div
-                              className="bg-gradient-to-r from-white to-gray-300 h-2 rounded-full transition-all duration-500"
+                              className="bg-gradient-to-r from-gray-800 to-gray-600 h-2 rounded-full transition-all duration-500"
                               style={{ width: `${book.progress}%` }}
                             ></div>
                           </div>
@@ -269,53 +285,78 @@ const BookShelf = () => {
                       )}
 
                       {book.reviewPreview && (
-                        <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                          <p className="text-gray-300 text-sm italic">"{book.reviewPreview}"</p>
+                        <div className="bg-black/5 rounded-lg p-3 border border-black/10">
+                          <p className="text-gray-700 text-sm italic">"{book.reviewPreview}"</p>
                         </div>
                       )}
 
                       <div className="flex gap-2 flex-wrap">
                         {book.status === "wishlist" && (
-                          <Button 
-                            onClick={() => handleStartReading(book.id)}
-                            className="bg-white text-black hover:bg-gray-200 shadow-lg"
-                          >
-                            읽기 시작
-                          </Button>
+                          <>
+                            <Button 
+                              onClick={() => handleStartReading(book.id)}
+                              className="bg-black text-white hover:bg-gray-800 shadow-lg"
+                            >
+                              읽기 시작
+                            </Button>
+                            <Button 
+                              onClick={() => handleMarkCompleted(book.id)}
+                              variant="outline"
+                              className="border-black/20 text-gray-700 hover:bg-black/5"
+                            >
+                              완독했어요
+                            </Button>
+                          </>
                         )}
                         {book.status === "reading" && (
                           <>
                             <Button 
                               onClick={() => setSelectedBook(book)}
-                              className="bg-white/10 text-white border border-white/20 hover:bg-white/20"
+                              className="bg-black/10 text-gray-800 border border-black/20 hover:bg-black/20"
                             >
                               진행률 업데이트
                             </Button>
+                            <Button 
+                              onClick={() => handleReviewWrite(book)}
+                              className="bg-black text-white hover:bg-gray-800 shadow-lg"
+                            >
+                              <Edit3 className="w-4 h-4 mr-2" />
+                              독후감 작성
+                            </Button>
                             <Button
                               onClick={() => setShowChart(showChart === book.id ? null : book.id)}
-                              className="bg-white/10 text-white border border-white/20 hover:bg-white/20"
+                              className="bg-black/10 text-gray-800 border border-black/20 hover:bg-black/20"
                             >
                               <TrendingUp className="w-4 h-4 mr-2" />
-                              진행률 그래프
+                              진행도 확인
+                            </Button>
+                            <Button 
+                              onClick={() => handleMarkCompleted(book.id)}
+                              variant="outline"
+                              className="border-black/20 text-gray-700 hover:bg-black/5"
+                            >
+                              완독했어요
                             </Button>
                           </>
                         )}
                         {book.status === "completed" && (
-                          <Button
-                            onClick={() => setShowChart(showChart === book.id ? null : book.id)}
-                            className="bg-white/10 text-white border border-white/20 hover:bg-white/20"
-                          >
-                            <TrendingUp className="w-4 h-4 mr-2" />
-                            진행률 그래프
-                          </Button>
+                          <>
+                            <Button 
+                              onClick={() => handleReviewWrite(book)}
+                              className="bg-black text-white hover:bg-gray-800 shadow-lg"
+                            >
+                              <Edit3 className="w-4 h-4 mr-2" />
+                              독후감 작성
+                            </Button>
+                            <Button
+                              onClick={() => setShowChart(showChart === book.id ? null : book.id)}
+                              className="bg-black/10 text-gray-800 border border-black/20 hover:bg-black/20"
+                            >
+                              <TrendingUp className="w-4 h-4 mr-2" />
+                              진행도 확인
+                            </Button>
+                          </>
                         )}
-                        <Button 
-                          onClick={() => handleReviewWrite(book)}
-                          className="bg-white text-black hover:bg-gray-200 shadow-lg"
-                        >
-                          <Edit3 className="w-4 h-4 mr-2" />
-                          독후감 작성
-                        </Button>
                       </div>
                     </div>
                   </div>

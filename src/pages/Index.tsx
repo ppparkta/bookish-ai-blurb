@@ -7,36 +7,34 @@ import { BookOpen, Search, Plus, TrendingUp } from "lucide-react";
 import BookSearch from "@/components/BookSearch";
 import BookShelf from "@/components/BookShelf";
 import ReadingProgress from "@/components/ReadingProgress";
-import ReviewForm from "@/components/ReviewForm";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("search");
-  const [selectedBook, setSelectedBook] = useState(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-100 to-black">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <BookOpen className="w-8 h-8 text-white" />
-            <h1 className="text-4xl font-bold text-white tracking-tight">BookVibe</h1>
+            <BookOpen className="w-8 h-8 text-gray-800" />
+            <h1 className="text-4xl font-bold text-gray-800 tracking-tight">BookVibe</h1>
           </div>
-          <p className="text-gray-400 text-lg font-light tracking-wide">
+          <p className="text-gray-600 text-lg font-light tracking-wide">
             📖 힙한 독서 기록, AI로 스마트하게 ✨
           </p>
         </div>
 
         {/* Navigation */}
         <div className="flex justify-center mb-8">
-          <div className="bg-white/5 backdrop-blur-xl rounded-full p-2 flex gap-2 border border-white/10">
+          <div className="bg-black/5 backdrop-blur-xl rounded-full p-2 flex gap-2 border border-black/10">
             <Button
               variant={activeTab === "search" ? "secondary" : "ghost"}
               onClick={() => setActiveTab("search")}
               className={`rounded-full px-6 transition-all duration-300 ${
                 activeTab === "search" 
-                  ? "bg-white text-black shadow-xl" 
-                  : "text-white hover:bg-white/10"
+                  ? "bg-black text-white shadow-xl" 
+                  : "text-gray-700 hover:bg-black/10"
               }`}
             >
               <Search className="w-4 h-4 mr-2" />
@@ -47,8 +45,8 @@ const Index = () => {
               onClick={() => setActiveTab("shelf")}
               className={`rounded-full px-6 transition-all duration-300 ${
                 activeTab === "shelf" 
-                  ? "bg-white text-black shadow-xl" 
-                  : "text-white hover:bg-white/10"
+                  ? "bg-black text-white shadow-xl" 
+                  : "text-gray-700 hover:bg-black/10"
               }`}
             >
               <BookOpen className="w-4 h-4 mr-2" />
@@ -59,8 +57,8 @@ const Index = () => {
               onClick={() => setActiveTab("progress")}
               className={`rounded-full px-6 transition-all duration-300 ${
                 activeTab === "progress" 
-                  ? "bg-white text-black shadow-xl" 
-                  : "text-white hover:bg-white/10"
+                  ? "bg-black text-white shadow-xl" 
+                  : "text-gray-700 hover:bg-black/10"
               }`}
             >
               <TrendingUp className="w-4 h-4 mr-2" />
@@ -71,26 +69,10 @@ const Index = () => {
 
         {/* Content */}
         <div className="max-w-6xl mx-auto">
-          {activeTab === "search" && (
-            <BookSearch onBookSelect={setSelectedBook} />
-          )}
-          
-          {activeTab === "shelf" && (
-            <BookShelf />
-          )}
-          
-          {activeTab === "progress" && (
-            <ReadingProgress />
-          )}
+          {activeTab === "search" && <BookSearch />}
+          {activeTab === "shelf" && <BookShelf />}
+          {activeTab === "progress" && <ReadingProgress />}
         </div>
-
-        {/* Review Modal */}
-        {selectedBook && (
-          <ReviewForm 
-            book={selectedBook} 
-            onClose={() => setSelectedBook(null)} 
-          />
-        )}
       </div>
     </div>
   );

@@ -79,8 +79,8 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <Card className="bg-white/95 backdrop-blur-lg border-0 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-xl flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-purple-600" />
+          <CardTitle className="text-xl flex items-center gap-2 text-gray-800">
+            <BookOpen className="w-5 h-5 text-gray-700" />
             독후감 작성
           </CardTitle>
           <Button
@@ -95,7 +95,7 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
         
         <CardContent className="space-y-6">
           {/* Book Info */}
-          <div className="flex gap-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+          <div className="flex gap-4 p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg">
             <img
               src={book.cover}
               alt={book.title}
@@ -109,7 +109,7 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
 
           {/* Rating */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">평점</Label>
+            <Label className="text-sm font-medium text-gray-700">평점</Label>
             <div className="flex items-center gap-4">
               <Slider
                 value={formData.rating}
@@ -121,7 +121,7 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
               />
               <div className="flex items-center gap-1">
                 <Heart className="w-4 h-4 text-red-500 fill-current" />
-                <span className="font-semibold text-lg">{formData.rating[0]}</span>
+                <span className="font-semibold text-lg text-gray-800">{formData.rating[0]}</span>
               </div>
             </div>
           </div>
@@ -129,47 +129,51 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
           {/* Reading Progress */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="currentPage">현재 페이지</Label>
+              <Label htmlFor="currentPage" className="text-gray-700">현재 페이지</Label>
               <Input
                 id="currentPage"
                 type="number"
                 placeholder="ex) 150"
                 value={formData.currentPage}
                 onChange={(e) => setFormData(prev => ({ ...prev, currentPage: e.target.value }))}
+                className="text-gray-800"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="totalPages">전체 페이지</Label>
+              <Label htmlFor="totalPages" className="text-gray-700">전체 페이지</Label>
               <Input
                 id="totalPages"
                 type="number"
                 placeholder="ex) 300"
                 value={formData.totalPages}
                 onChange={(e) => setFormData(prev => ({ ...prev, totalPages: e.target.value }))}
+                className="text-gray-800"
               />
             </div>
           </div>
 
           {/* Thoughts */}
           <div className="space-y-2">
-            <Label htmlFor="thoughts">느낀 점 (간단하게라도 적어주세요!)</Label>
+            <Label htmlFor="thoughts" className="text-gray-700">느낀 점 (간단하게라도 적어주세요!)</Label>
             <Textarea
               id="thoughts"
               placeholder="이 책을 읽으면서 어떤 생각이나 감정이 들었나요? AI가 이를 바탕으로 멋진 독후감을 만들어드릴게요 ✨"
               rows={4}
               value={formData.thoughts}
               onChange={(e) => setFormData(prev => ({ ...prev, thoughts: e.target.value }))}
+              className="text-gray-800"
             />
           </div>
 
           {/* Favorite Quote */}
           <div className="space-y-2">
-            <Label htmlFor="quote">인상 깊은 구절 (선택사항)</Label>
+            <Label htmlFor="quote" className="text-gray-700">인상 깊은 구절 (선택사항)</Label>
             <Input
               id="quote"
               placeholder="기억에 남는 문장이나 구절이 있다면..."
               value={formData.favoriteQuote}
               onChange={(e) => setFormData(prev => ({ ...prev, favoriteQuote: e.target.value }))}
+              className="text-gray-800"
             />
           </div>
 
@@ -177,7 +181,7 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
           <Button
             onClick={handleGenerateReview}
             disabled={isGenerating}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            className="w-full bg-gradient-to-r from-gray-700 to-gray-900 text-white shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <Sparkles className="w-4 h-4 mr-2" />
             {isGenerating ? "AI가 독후감을 작성하는 중..." : "AI로 독후감 생성하기 ✨"}
@@ -186,12 +190,12 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
           {/* Generated Review */}
           {formData.generatedReview && (
             <div className="space-y-2">
-              <Label>AI가 생성한 독후감</Label>
+              <Label className="text-gray-700">AI가 생성한 독후감</Label>
               <Textarea
                 value={formData.generatedReview}
                 onChange={(e) => setFormData(prev => ({ ...prev, generatedReview: e.target.value }))}
                 rows={8}
-                className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200"
+                className="bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 text-gray-800"
               />
               <p className="text-sm text-gray-600">
                 💡 마음에 들지 않으면 직접 수정하거나 다시 생성할 수 있어요!
@@ -210,7 +214,7 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
             </Button>
             <Button
               onClick={handleSave}
-              className="flex-1 bg-gradient-to-r from-green-500 to-blue-500 text-white"
+              className="flex-1 bg-gradient-to-r from-green-600 to-blue-600 text-white"
               disabled={!formData.thoughts.trim()}
             >
               저장하기

@@ -3,8 +3,9 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, BookOpen, Heart } from "lucide-react";
+import { Search, Plus, BookOpen, Heart, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ManualBookAdd from "./ManualBookAdd";
 
 interface Book {
   isbn: string;
@@ -16,14 +17,11 @@ interface Book {
   description: string;
 }
 
-interface BookSearchProps {
-  onBookSelect: (book: Book) => void;
-}
-
-const BookSearch = ({ onBookSelect }: BookSearchProps) => {
+const BookSearch = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showManualAdd, setShowManualAdd] = useState(false);
   const { toast } = useToast();
 
   // Mock data for demonstration
@@ -72,7 +70,7 @@ const BookSearch = ({ onBookSelect }: BookSearchProps) => {
       if (filteredBooks.length === 0) {
         toast({
           title: "검색 결과가 없습니다",
-          description: "다른 키워드로 검색해보세요",
+          description: "다른 키워드로 검색하거나 수동으로 등록해보세요",
         });
       }
     }, 1000);
@@ -94,33 +92,41 @@ const BookSearch = ({ onBookSelect }: BookSearchProps) => {
   return (
     <div className="space-y-6">
       {/* Search Bar */}
-      <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl">
+      <Card className="bg-black/5 backdrop-blur-xl border border-black/10 shadow-2xl">
         <CardContent className="p-6">
-          <div className="flex gap-4">
+          <div className="flex gap-4 mb-4">
             <Input
               placeholder="책 제목이나 저자명을 검색하세요..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="flex-1 bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-white/40"
+              className="flex-1 bg-black/5 border-black/20 text-gray-800 placeholder:text-gray-500 focus:border-black/40"
             />
             <Button 
               onClick={handleSearch}
               disabled={isLoading}
-              className="bg-white text-black hover:bg-gray-200 shadow-lg"
+              className="bg-black text-white hover:bg-gray-800 shadow-lg"
             >
               <Search className="w-4 h-4 mr-2" />
               {isLoading ? "검색중..." : "검색"}
             </Button>
           </div>
+          <Button 
+            onClick={() => setShowManualAdd(true)}
+            variant="outline"
+            className="w-full border-black/20 text-gray-700 hover:bg-black/5"
+          >
+            <Edit className="w-4 h-4 mr-2" />
+            원하는 책이 없나요? 직접 등록하기
+          </Button>
         </CardContent>
       </Card>
 
       {/* Search Results */}
       {books.length > 0 && (
-        <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl">
+        <Card className="bg-black/5 backdrop-blur-xl border border-black/10 shadow-2xl">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-gray-800 flex items-center gap-2">
               <BookOpen className="w-5 h-5" />
               검색 결과 ({books.length}권)
             </CardTitle>
@@ -130,7 +136,7 @@ const BookSearch = ({ onBookSelect }: BookSearchProps) => {
               {books.map((book) => (
                 <div
                   key={book.isbn}
-                  className="bg-white/5 backdrop-blur-sm rounded-lg p-4 flex gap-4 hover:bg-white/10 transition-all duration-300 border border-white/10"
+                  className="bg-black/5 backdrop-blur-sm rounded-lg p-4 flex gap-4 hover:bg-black/10 transition-all duration-300 border border-black/10"
                 >
                   <img
                     src={book.cover}
@@ -138,24 +144,17 @@ const BookSearch = ({ onBookSelect }: BookSearchProps) => {
                     className="w-16 h-24 object-cover rounded-lg shadow-md"
                   />
                   <div className="flex-1">
-                    <h3 className="font-semibold text-white text-lg mb-1">{book.title}</h3>
-                    <p className="text-gray-400 text-sm mb-2">{book.author} · {book.publisher}</p>
-                    <p className="text-gray-300 text-sm line-clamp-2">{book.description}</p>
+                    <h3 className="font-semibold text-gray-800 text-lg mb-1">{book.title}</h3>
+                    <p className="text-gray-600 text-sm mb-2">{book.author} · {book.publisher}</p>
+                    <p className="text-gray-700 text-sm line-clamp-2">{book.description}</p>
                   </div>
                   <div className="flex flex-col gap-2">
                     <Button
                       onClick={() => handleAddToShelf(book)}
-                      className="bg-white/10 text-white border border-white/20 hover:bg-white/20 shadow-lg"
+                      className="bg-black/10 text-gray-800 border border-black/20 hover:bg-black/20 shadow-lg"
                     >
                       <Heart className="w-4 h-4 mr-2" />
                       서재에 담기
-                    </Button>
-                    <Button
-                      onClick={() => onBookSelect(book)}
-                      className="bg-white text-black hover:bg-gray-200 shadow-lg"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      독후감 쓰기
                     </Button>
                   </div>
                 </div>
@@ -163,6 +162,11 @@ const BookSearch = ({ onBookSelect }: BookSearchProps) => {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Manual Book Add Modal */}
+      {showManualAdd && (
+        <ManualBookAdd onClose={() => setShowManualAdd(false)} />
       )}
     </div>
   );
