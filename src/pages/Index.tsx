@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,7 @@ const Index = () => {
             <h1 className="text-4xl font-bold text-white tracking-tight">BookVibe</h1>
           </div>
           <p className="text-gray-300 text-lg font-light tracking-wide">
-            📖 힙한 독서 기록, AI로 스마트하게 ✨
+            힙한 독서, AI와 함께.
           </p>
         </div>
 
@@ -37,7 +36,7 @@ const Index = () => {
                   : "text-gray-300 hover:bg-white/10 hover:text-white"
               }`}
             >
-              <Search className="w-4 h-4 mr-2" />
+              <span className="mr-2 hidden sm:inline-block"><Search className="w-4 h-4" /></span>
               책 찾기
             </Button>
             <Button
@@ -49,7 +48,7 @@ const Index = () => {
                   : "text-gray-300 hover:bg-white/10 hover:text-white"
               }`}
             >
-              <BookOpen className="w-4 h-4 mr-2" />
+              <span className="mr-2 hidden sm:inline-block"><BookOpen className="w-4 h-4" /></span>
               내 서재
             </Button>
             <Button
@@ -61,7 +60,7 @@ const Index = () => {
                   : "text-gray-300 hover:bg-white/10 hover:text-white"
               }`}
             >
-              <TrendingUp className="w-4 h-4 mr-2" />
+              <span className="mr-2 hidden sm:inline-block"><TrendingUp className="w-4 h-4" /></span>
               진행률
             </Button>
           </div>
@@ -73,6 +72,13 @@ const Index = () => {
           {activeTab === "shelf" && <BookShelf />}
           {activeTab === "progress" && <ReadingProgress />}
         </div>
+
+        <footer className="w-full text-center text-xs text-gray-300 flex flex-col items-center justify-center px-4 py-4 mt-8" style={{ fontFamily: 'Pretendard, sans-serif' }}>
+          <div>© 2025 Sooyang. All rights reserved.</div>
+          <div className="mt-1">
+            by Sooyang | <a href="https://github.com/ppparkta/bookish-ai-blurb" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">GitHub</a>
+          </div>
+        </footer>
       </div>
     </div>
   );

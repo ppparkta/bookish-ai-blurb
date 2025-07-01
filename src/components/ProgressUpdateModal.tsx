@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,8 +49,8 @@ const ProgressUpdateModal = ({ book, onClose, onUpdate }: ProgressUpdateModalPro
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <Card className="bg-white/95 backdrop-blur-lg border-0 shadow-2xl w-full max-w-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-xl flex items-center gap-2 text-gray-800">
-            <BookOpen className="w-5 h-5 text-gray-700" />
+          <CardTitle className="text-xl flex items-center gap-2 text-white">
+            <BookOpen className="w-5 h-5 text-gray-100" />
             진행률 업데이트
           </CardTitle>
           <Button
@@ -73,15 +72,15 @@ const ProgressUpdateModal = ({ book, onClose, onUpdate }: ProgressUpdateModalPro
               className="w-16 h-24 object-cover rounded shadow-md"
             />
             <div>
-              <h3 className="font-semibold text-lg text-gray-800">{book.title}</h3>
-              <p className="text-gray-600">{book.author}</p>
-              <p className="text-sm text-gray-500">총 {book.totalPages}페이지</p>
+              <h3 className="font-semibold text-lg text-white">{book.title}</h3>
+              <p className="text-gray-200">{book.author}</p>
+              <p className="text-sm text-gray-300">총 {book.totalPages}페이지</p>
             </div>
           </div>
 
           {/* Current Progress */}
           <div className="space-y-2">
-            <Label htmlFor="currentPage" className="text-gray-700">현재까지 읽은 페이지</Label>
+            <Label htmlFor="currentPage" className="text-gray-100">현재까지 읽은 페이지</Label>
             <Input
               id="currentPage"
               type="number"
@@ -90,9 +89,9 @@ const ProgressUpdateModal = ({ book, onClose, onUpdate }: ProgressUpdateModalPro
               value={currentPage}
               onChange={(e) => setCurrentPage(e.target.value)}
               placeholder={`0 ~ ${book.totalPages}`}
-              className="text-gray-800"
+              className="text-white"
             />
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-200">
               진행률: {Math.round((parseInt(currentPage) || 0) / book.totalPages * 100)}%
             </p>
           </div>

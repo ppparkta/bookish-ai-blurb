@@ -1,73 +1,74 @@
-# Welcome to your Lovable project
+# BookVibe
 
-## Project info
+## 페르소나
 
-**URL**: https://lovable.dev/projects/564a9ed8-f04d-4c2e-b449-9ab5c3b91183
+### 22세 대학생 김지현
+- **목표:** 매달 전공 서적 2권, 교양 서적 2권을 읽고, 과제로 제출할 독후감을 효율적으로 작성하고 싶다.
+- **니즈:** 책의 핵심 내용을 빠르게 요약하고, 내 생각을 덧붙여 독후감을 쉽게 완성하는 기능. 읽은 책들을 깔끔하게 관리하는 기능.
+- **페인 포인트:** 여러 권의 책을 읽다 보니 내용이 섞이고, 독후감을 쓰려고 하면 막막해서 시간을 많이 허비한다.
 
-## How can I edit this code?
+### 31세 마케터 박서준
+- **목표:** 출퇴근 시간을 활용해 한 달에 2권 이상 책을 읽으며 꾸준한 자기계발 습관을 만들고 싶다.
+- **니즈:** 내가 얼마나 꾸준히 책을 읽고 있는지 눈으로 확인하며 동기 부여를 얻는 기능. 책에서 얻은 영감을 잊지 않게 간단히 기록하는 기능.
+- **페인 포인트:** 바쁜 업무에 치여 독서 계획이 흐지부지되기 일쑤고, 책을 읽어도 금방 내용을 잊어버린다.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 사용자 시나리오
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/564a9ed8-f04d-4c2e-b449-9ab5c3b91183) and start prompting.
+### 대학생 사용자 시나리오 (김지현)
 
-Changes made via Lovable will be committed automatically to this repo.
+1. 'BookVibe' 앱을 실행하고, '책 찾기' 탭에서 '백년의 고독'을 검색하여 '내 서재'에 추가한다.
+2. 책 상태를 '읽는 중'으로 변경하고, 매일 지하철에서 책을 읽은 후 '진행률 업데이트'를 통해 읽은 페이지를 입력한다.
+3. 읽다가 인상 깊은 구절이 나오면 '독후감 작성' 페이지를 열어 '인상 깊은 구절'에 기록하여 저장해 둔다.
+4. 책을 다 읽고 '완독했어요' 버튼을 누른다. '독후감 작성' 페이지에서 별점 5점을 주고, 느낀 점에 '가족의 역사가 반복되는 것이 인상적이었음', '마술적 리얼리즘 기법이 흥미로움' 이라고 키워드 중심으로 메모한다.
+5. 'AI로 독후감 생성하기' 버튼을 누르면, 앱은 김지현이 기록한 평점, 느낀 점, 인용구를 바탕으로 짜임새 있는 독후감 초안을 생성해준다.
+6. 생성된 초안을 조금 수정하여 과제를 완성하고 제출한다.
+7. '진행률' 탭에서 이번 달 목표를 달성한 것과, 완독한 '백년의 고독' 책이 책장에 두툼하게 쌓인 것을 보며 뿌듯함을 느낀다.
 
-**Use your preferred IDE**
+### 직장인 사용자 시나리오 (박서준)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. 책 추가
+2. 틈틈이 읽고 진행률 업데이트
+3. 독서 통계 확인
+4. 동기 부여
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+#### 요구사항
+- 내 서재 내 검색, 정렬(진행률순), 필터(상태별) 기능
+- 월별 독서 목표 설정 및 진행도 확인 기능
+- 총 독서일, 연속 독서일, 평균/총 페이지 수 등 통계 제공 기능
+- 현재 읽고 있는 책 목록 및 진행률 표시 기능
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 사용자 스토리와 인수 조건
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 요구사항 1: AI로 독후감 생성하기
+- **사용자 스토리:**
+  > "대학생으로서, 나는 내가 기록한 핵심 내용과 감상을 바탕으로 독후감 초안을 생성하고 싶다. 그래서 글쓰기에 대한 부담을 줄이고 과제 시간을 절약할 수 있다."
+- **인수 조건:**
+    - **Given:** 사용자가 '완독' 상태의 책에 대해 평점과 하나 이상의 '느낀 점' 또는 '인상 깊은 구절'을 입력했다.
+    - **When:** 사용자가 'AI로 독후감 생성하기' 버튼을 누른다.
+    - **Then:** 시스템은 15초 이내에 입력된 정보를 논리적으로 조합하여 최소 3문단 이상의 독후감 초안을 텍스트 에디터에 표시한다.
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 요구사항 2: 완독한 책 시각화
+- **사용자 스토리:**
+  > "독서 초심자로서, 나는 내가 완독한 책들이 시각적으로 쌓이는 것을 보고 싶다. 그래서 꾸준히 독서하는 것에 대한 성취감과 동기 부여를 얻을 수 있다."
+- **인수 조건:**
+    - **Given:** 사용자가 '진행률' 탭에 있고, 최소 한 권 이상의 책을 '완독' 상태로 변경했다.
+    - **When:** 사용자가 화면을 아래로 스크롤하여 '완독한 책' 섹션을 본다.
+    - **Then:** 시스템은 완독한 책을 가로로 눕혀 쌓은 이미지를 표시한다. 각 책의 두께는 해당 도서의 총 페이지 수에 비례해야 하며, 책등에는 도서명이 표시되어야 한다.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+### 요구사항 3: 내 서재 필터 기능
+- **사용자 스토리:**
+  > "다독가로서, 나는 내 서재에 있는 책들을 독서 상태('읽고 싶은', '읽는 중', '완독')에 따라 필터링하고 싶다. 그래서 지금 읽을 책을 찾거나 과거에 읽은 책을 쉽게 찾아볼 수 있다. 그리고 예뻤으면 좋겠다."
+- **인수 조건:**
+    - **Given:** 사용자가 '내 서재' 탭에 있고, 서재에는 여러 상태의 책들이 존재한다.
+    - **When:** 사용자가 필터 아이콘을 누르고 '읽는 중'을 선택한다.
+    - **Then:** 화면에는 '읽는 중' 상태의 책 목록만 표시된다.
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## GitHub
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/564a9ed8-f04d-4c2e-b449-9ab5c3b91183) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- [https://github.com/ppparkta/bookish-ai-blurb](https://github.com/ppparkta/bookish-ai-blurb)

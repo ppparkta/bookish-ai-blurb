@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -92,41 +91,39 @@ const BookSearch = () => {
   return (
     <div className="space-y-6">
       {/* Search Bar */}
-      <Card className="bg-black/5 backdrop-blur-xl border border-black/10 shadow-2xl">
-        <CardContent className="p-6">
-          <div className="flex gap-4 mb-4">
-            <Input
-              placeholder="책 제목이나 저자명을 검색하세요..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="flex-1 bg-black/5 border-black/20 text-gray-800 placeholder:text-gray-500 focus:border-black/40"
-            />
-            <Button 
-              onClick={handleSearch}
-              disabled={isLoading}
-              className="bg-black text-white hover:bg-gray-800 shadow-lg"
-            >
-              <Search className="w-4 h-4 mr-2" />
-              {isLoading ? "검색중..." : "검색"}
-            </Button>
-          </div>
+      <div className="py-2 space-y-4">
+        <div className="flex gap-4 mb-4">
+          <Input
+            placeholder="책 제목이나 저자명을 검색하세요..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="flex-1 bg-[#23272f] border-white/20 text-white placeholder:text-gray-300 focus:border-white/40"
+          />
           <Button 
-            onClick={() => setShowManualAdd(true)}
-            variant="outline"
-            className="w-full border-black/20 text-gray-700 hover:bg-black/5"
+            onClick={handleSearch}
+            disabled={isLoading}
+            className="bg-gray-700 text-white hover:bg-gray-600 shadow-lg"
           >
-            <Edit className="w-4 h-4 mr-2" />
-            원하는 책이 없나요? 직접 등록하기
+            <Search className="w-4 h-4 mr-2" />
+            {isLoading ? "검색중..." : "검색"}
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+        <Button 
+          onClick={() => setShowManualAdd(true)}
+          variant="outline"
+          className="w-full border-[#A8FF78] text-[#A8FF78] bg-[#23272f] hover:bg-[#A8FF78] hover:text-gray-900 hover:border-[#A8FF78] border transition-colors duration-200"
+        >
+          <Edit className="w-4 h-4 mr-2" />
+          원하는 책이 없나요? 직접 등록하기
+        </Button>
+      </div>
 
       {/* Search Results */}
       {books.length > 0 && (
-        <Card className="bg-black/5 backdrop-blur-xl border border-black/10 shadow-2xl">
+        <Card className="bg-[#23272f] backdrop-blur-xl border border-white/10 shadow-2xl">
           <CardHeader>
-            <CardTitle className="text-gray-800 flex items-center gap-2">
+            <CardTitle className="text-white flex items-center gap-2">
               <BookOpen className="w-5 h-5" />
               검색 결과 ({books.length}권)
             </CardTitle>
@@ -136,7 +133,7 @@ const BookSearch = () => {
               {books.map((book) => (
                 <div
                   key={book.isbn}
-                  className="bg-black/5 backdrop-blur-sm rounded-lg p-4 flex gap-4 hover:bg-black/10 transition-all duration-300 border border-black/10"
+                  className="bg-[#23272f] backdrop-blur-sm rounded-lg p-4 flex gap-4 hover:bg-gray-800 transition-all duration-300 border border-white/10"
                 >
                   <img
                     src={book.cover}
@@ -144,14 +141,14 @@ const BookSearch = () => {
                     className="w-16 h-24 object-cover rounded-lg shadow-md"
                   />
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-800 text-lg mb-1">{book.title}</h3>
-                    <p className="text-gray-600 text-sm mb-2">{book.author} · {book.publisher}</p>
-                    <p className="text-gray-700 text-sm line-clamp-2">{book.description}</p>
+                    <h3 className="font-semibold text-white text-lg mb-1">{book.title}</h3>
+                    <p className="text-gray-200 text-sm mb-2">{book.author} · {book.publisher}</p>
+                    <p className="text-gray-300 text-sm line-clamp-2">{book.description}</p>
                   </div>
                   <div className="flex flex-col gap-2">
                     <Button
                       onClick={() => handleAddToShelf(book)}
-                      className="bg-black/10 text-gray-800 border border-black/20 hover:bg-black/20 shadow-lg"
+                      className="bg-gray-700 text-white border border-white/20 hover:bg-gray-600 shadow-lg"
                     >
                       <Heart className="w-4 h-4 mr-2" />
                       서재에 담기

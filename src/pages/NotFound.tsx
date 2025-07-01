@@ -20,6 +20,12 @@ const NotFound = () => {
           Return to Home
         </a>
       </div>
+      <footer className="w-full text-center text-xs text-gray-300 flex flex-col items-center justify-center px-4 py-4 mt-8" style={{ fontFamily: 'Pretendard, sans-serif' }}>
+        <div>© 2025 Sooyang. All rights reserved.</div>
+        <div className="mt-1">
+          by Sooyang | <a href="https://github.com/ppparkta/bookish-ai-blurb" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">GitHub</a>
+        </div>
+      </footer>
     </div>
   );
 };

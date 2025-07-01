@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -79,7 +78,7 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <Card className="bg-white/95 backdrop-blur-lg border-0 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-xl flex items-center gap-2 text-gray-800">
+          <CardTitle className="text-xl flex items-center gap-2 text-black">
             <BookOpen className="w-5 h-5 text-gray-700" />
             독후감 작성
           </CardTitle>
@@ -87,7 +86,7 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-700 hover:text-gray-900"
           >
             <X className="w-4 h-4" />
           </Button>
@@ -102,14 +101,14 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
               className="w-16 h-24 object-cover rounded shadow-md"
             />
             <div>
-              <h3 className="font-semibold text-lg text-gray-800">{book.title}</h3>
-              <p className="text-gray-600">{book.author}</p>
+              <h3 className="font-semibold text-lg text-black">{book.title}</h3>
+              <p className="text-gray-700">{book.author}</p>
             </div>
           </div>
 
           {/* Rating */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700">평점</Label>
+            <Label className="text-sm font-medium text-black">평점</Label>
             <div className="flex items-center gap-4">
               <Slider
                 value={formData.rating}
@@ -121,7 +120,7 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
               />
               <div className="flex items-center gap-1">
                 <Heart className="w-4 h-4 text-red-500 fill-current" />
-                <span className="font-semibold text-lg text-gray-800">{formData.rating[0]}</span>
+                <span className="font-semibold text-lg text-black">{formData.rating[0]}</span>
               </div>
             </div>
           </div>
@@ -129,51 +128,51 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
           {/* Reading Progress */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="currentPage" className="text-gray-700">현재 페이지</Label>
+              <Label htmlFor="currentPage" className="text-black">현재 페이지</Label>
               <Input
                 id="currentPage"
                 type="number"
                 placeholder="ex) 150"
                 value={formData.currentPage}
                 onChange={(e) => setFormData(prev => ({ ...prev, currentPage: e.target.value }))}
-                className="text-gray-800"
+                className="text-black"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="totalPages" className="text-gray-700">전체 페이지</Label>
+              <Label htmlFor="totalPages" className="text-black">전체 페이지</Label>
               <Input
                 id="totalPages"
                 type="number"
                 placeholder="ex) 300"
                 value={formData.totalPages}
                 onChange={(e) => setFormData(prev => ({ ...prev, totalPages: e.target.value }))}
-                className="text-gray-800"
+                className="text-black"
               />
             </div>
           </div>
 
           {/* Thoughts */}
           <div className="space-y-2">
-            <Label htmlFor="thoughts" className="text-gray-700">느낀 점 (간단하게라도 적어주세요!)</Label>
+            <Label className="text-sm font-medium text-black">어떤 감정이 들었나요? (선택사항)</Label>
             <Textarea
               id="thoughts"
               placeholder="이 책을 읽으면서 어떤 생각이나 감정이 들었나요? AI가 이를 바탕으로 멋진 독후감을 만들어드릴게요 ✨"
               rows={4}
               value={formData.thoughts}
               onChange={(e) => setFormData(prev => ({ ...prev, thoughts: e.target.value }))}
-              className="text-gray-800"
+              className="text-black"
             />
           </div>
 
           {/* Favorite Quote */}
           <div className="space-y-2">
-            <Label htmlFor="quote" className="text-gray-700">인상 깊은 구절 (선택사항)</Label>
+            <Label htmlFor="quote" className="text-black">인상 깊은 구절 (선택사항)</Label>
             <Input
               id="quote"
               placeholder="기억에 남는 문장이나 구절이 있다면..."
               value={formData.favoriteQuote}
               onChange={(e) => setFormData(prev => ({ ...prev, favoriteQuote: e.target.value }))}
-              className="text-gray-800"
+              className="text-black"
             />
           </div>
 
@@ -190,14 +189,14 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
           {/* Generated Review */}
           {formData.generatedReview && (
             <div className="space-y-2">
-              <Label className="text-gray-700">AI가 생성한 독후감</Label>
+              <Label className="text-black">AI가 생성한 독후감</Label>
               <Textarea
                 value={formData.generatedReview}
                 onChange={(e) => setFormData(prev => ({ ...prev, generatedReview: e.target.value }))}
                 rows={8}
-                className="bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 text-gray-800"
+                className="bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 text-black"
               />
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-700">
                 💡 마음에 들지 않으면 직접 수정하거나 다시 생성할 수 있어요!
               </p>
             </div>
@@ -208,13 +207,13 @@ const ReviewForm = ({ book, onClose }: ReviewFormProps) => {
             <Button
               variant="outline"
               onClick={onClose}
-              className="flex-1"
+              className="flex-1 text-black border-gray-400"
             >
               취소
             </Button>
             <Button
               onClick={handleSave}
-              className="flex-1 bg-gradient-to-r from-green-600 to-blue-600 text-white"
+              className="flex-1 bg-gradient-to-r from-gray-200 to-gray-300 text-black"
               disabled={!formData.thoughts.trim()}
             >
               저장하기
