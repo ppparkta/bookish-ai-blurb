@@ -1,5 +1,7 @@
 # BookVibe
 
+> [배포 URL](https://bookish-ai-blurb.lovable.app/)
+
 ## 페르소나
 
 ### 22세 대학생 김지현
