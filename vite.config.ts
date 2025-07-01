@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-  base: '/book-vibe/',
+  base: '/bookish-ai-blurb/',
   plugins: [
     react(),
     mode === 'development' &&
