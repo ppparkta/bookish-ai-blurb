@@ -11,9 +11,10 @@ import { useToast } from "@/hooks/use-toast";
 
 interface ManualBookAddProps {
   onClose: () => void;
+  onBookAdded?: (bookData: any) => void;
 }
 
-const ManualBookAdd = ({ onClose }: ManualBookAddProps) => {
+const ManualBookAdd = ({ onClose, onBookAdded }: ManualBookAddProps) => {
   const [formData, setFormData] = useState({
     title: "",
     author: "",
@@ -37,6 +38,10 @@ const ManualBookAdd = ({ onClose }: ManualBookAddProps) => {
         variant: "destructive"
       });
       return;
+    }
+
+    if (onBookAdded) {
+      onBookAdded(formData);
     }
 
     toast({

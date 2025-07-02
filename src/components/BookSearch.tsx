@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,11 @@ interface Book {
   description: string;
 }
 
-const BookSearch = () => {
+interface BookSearchProps {
+  onAddToShelf: (book: Omit<Book, 'isbn'> & { id: number; status: string; totalPages: number; currentPage: number; hasReview: boolean; category?: string; readCount: number }) => void;
+}
+
+const BookSearch = ({ onAddToShelf }: BookSearchProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,6 +81,20 @@ const BookSearch = () => {
   };
 
   const handleAddToShelf = (book: Book) => {
+    const newBook = {
+      id: Date.now(),
+      title: book.title,
+      author: book.author,
+      cover: book.cover,
+      status: "want-to-read",
+      totalPages: 300,
+      currentPage: 0,
+      hasReview: false,
+      category: "소설",
+      readCount: 1
+    };
+    
+    onAddToShelf(newBook);
     toast({
       title: "서재에 추가되었습니다! 📚",
       description: `"${book.title}"이(가) 읽고 싶은 책 목록에 추가되었어요`,
@@ -88,40 +107,61 @@ const BookSearch = () => {
     }
   };
 
+  const handleManualBookAdded = (bookData: any) => {
+    const newBook = {
+      id: Date.now(),
+      title: bookData.title,
+      author: bookData.author,
+      cover: bookData.coverUrl || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=200&h=300&fit=crop",
+      status: "want-to-read",
+      totalPages: parseInt(bookData.totalPages) || 300,
+      currentPage: 0,
+      hasReview: false,
+      category: bookData.category || "기타",
+      readCount: 1
+    };
+    
+    onAddToShelf(newBook);
+  };
+
   return (
     <div className="space-y-6">
       {/* Search Bar */}
-      <div className="py-2 space-y-4">
-        <div className="flex gap-4 mb-4">
-          <Input
-            placeholder="책 제목이나 저자명을 검색하세요..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="flex-1 bg-[#23272f] border-white/20 text-white placeholder:text-gray-300 focus:border-white/40"
-          />
-          <Button 
-            onClick={handleSearch}
-            disabled={isLoading}
-            className="bg-gray-700 text-white hover:bg-gray-600 shadow-lg"
-          >
-            <Search className="w-4 h-4 mr-2" />
-            {isLoading ? "검색중..." : "검색"}
-          </Button>
-        </div>
-        <Button 
-          onClick={() => setShowManualAdd(true)}
-          variant="outline"
-          className="w-full border-[#A8FF78] text-[#A8FF78] bg-[#23272f] hover:bg-[#A8FF78] hover:text-gray-900 hover:border-[#A8FF78] border transition-colors duration-200"
-        >
-          <Edit className="w-4 h-4 mr-2" />
-          원하는 책이 없나요? 직접 등록하기
-        </Button>
-      </div>
+      <Card className="bg-gray-900/80 backdrop-blur-xl border border-lime-500/30 shadow-2xl">
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Input
+                placeholder="책 제목이나 저자명을 검색하세요..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="flex-1 bg-gray-800 border-gray-700 text-white placeholder:text-gray-300 focus:border-lime-500"
+              />
+              <Button 
+                onClick={handleSearch}
+                disabled={isLoading}
+                className="bg-gray-700 text-white hover:bg-gray-600 shadow-lg whitespace-nowrap"
+              >
+                <Search className="w-4 h-4 mr-2" />
+                {isLoading ? "검색중..." : "검색"}
+              </Button>
+            </div>
+            <Button 
+              onClick={() => setShowManualAdd(true)}
+              variant="outline"
+              className="w-full border-lime-500 text-lime-400 bg-transparent hover:bg-lime-500/10 hover:text-lime-300 border transition-colors duration-200"
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              원하는 책이 없나요? 직접 등록하기
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Search Results */}
       {books.length > 0 && (
-        <Card className="bg-[#23272f] backdrop-blur-xl border border-white/10 shadow-2xl">
+        <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <BookOpen className="w-5 h-5" />
@@ -133,26 +173,33 @@ const BookSearch = () => {
               {books.map((book) => (
                 <div
                   key={book.isbn}
-                  className="bg-[#23272f] backdrop-blur-sm rounded-lg p-4 flex gap-4 hover:bg-gray-800 transition-all duration-300 border border-white/10"
+                  className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-gray-700/50"
                 >
-                  <img
-                    src={book.cover}
-                    alt={book.title}
-                    className="w-16 h-24 object-cover rounded-lg shadow-md"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-white text-lg mb-1">{book.title}</h3>
-                    <p className="text-gray-200 text-sm mb-2">{book.author} · {book.publisher}</p>
-                    <p className="text-gray-300 text-sm line-clamp-2">{book.description}</p>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      onClick={() => handleAddToShelf(book)}
-                      className="bg-gray-700 text-white border border-white/20 hover:bg-gray-600 shadow-lg"
-                    >
-                      <Heart className="w-4 h-4 mr-2" />
-                      서재에 담기
-                    </Button>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-shrink-0 mx-auto sm:mx-0">
+                      <img
+                        src={book.cover}
+                        alt={book.title}
+                        className="w-16 h-24 object-cover rounded-lg shadow-md"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <div className="text-center sm:text-left">
+                        <h3 className="font-semibold text-white text-lg">{book.title}</h3>
+                        <p className="text-gray-200 text-sm">{book.author} · {book.publisher}</p>
+                        <p className="text-gray-300 text-sm mt-2 line-clamp-2">{book.description}</p>
+                      </div>
+                      <div className="flex justify-center sm:justify-start pt-2">
+                        <Button
+                          onClick={() => handleAddToShelf(book)}
+                          size="sm"
+                          className="bg-gray-700 text-white border border-white/20 hover:bg-gray-600 shadow-lg"
+                        >
+                          <Heart className="w-4 h-4 mr-2" />
+                          서재에 담기
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -163,7 +210,10 @@ const BookSearch = () => {
 
       {/* Manual Book Add Modal */}
       {showManualAdd && (
-        <ManualBookAdd onClose={() => setShowManualAdd(false)} />
+        <ManualBookAdd 
+          onClose={() => setShowManualAdd(false)} 
+          onBookAdded={handleManualBookAdded}
+        />
       )}
     </div>
   );

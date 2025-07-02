@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ChevronDown, ChevronRight, BookOpen, Star, Calendar, Palette } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, BookOpen, Star, Calendar } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface Book {
@@ -26,15 +26,19 @@ interface Review {
   quote?: string;
 }
 
-const MyReviews = () => {
+interface MyReviewsProps {
+  reviews?: Review[];
+}
+
+const MyReviews = ({ reviews: propReviews }: MyReviewsProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const book = location.state?.book as Book;
   
   const [openReviews, setOpenReviews] = useState<number[]>([]);
 
-  // Mock data for reviews
-  const reviews: Review[] = [
+  // Use passed reviews or mock data
+  const reviews: Review[] = propReviews || [
     {
       id: 1,
       type: "중간독후감",
@@ -63,13 +67,13 @@ const MyReviews = () => {
     );
   };
 
-  const getVibeColor = () => {
+  const getVibeColors = () => {
     const colors = [
-      "from-pink-500 to-purple-500",
-      "from-blue-500 to-cyan-500", 
-      "from-green-500 to-lime-500",
-      "from-orange-500 to-red-500",
-      "from-purple-500 to-pink-500"
+      "from-pink-400/20 via-purple-400/30 to-blue-400/20",
+      "from-emerald-400/20 via-teal-400/30 to-cyan-400/20", 
+      "from-orange-400/20 via-red-400/30 to-pink-400/20",
+      "from-lime-400/20 via-green-400/30 to-emerald-400/20",
+      "from-violet-400/20 via-purple-400/30 to-pink-400/20"
     ];
     return colors[Math.floor(Math.random() * colors.length)];
   };
@@ -107,11 +111,14 @@ const MyReviews = () => {
           </div>
 
           {/* Vibe Summary */}
-          <Card className="bg-gray-900/90 backdrop-blur-lg border border-gray-700/50 shadow-2xl mb-8">
+          <Card className="bg-gray-900/70 backdrop-blur-xl border border-gray-700/30 shadow-2xl mb-8 overflow-hidden">
             <CardContent className="p-8">
               <div className="text-center space-y-6">
-                <div className={`w-32 h-32 mx-auto rounded-full bg-gradient-to-br ${getVibeColor()} animate-pulse flex items-center justify-center`}>
-                  <Palette className="w-12 h-12 text-white" />
+                <div className={`w-32 h-32 mx-auto rounded-full bg-gradient-to-br ${getVibeColors()} backdrop-blur-sm border border-white/10 flex items-center justify-center relative overflow-hidden`}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+                  <div className="absolute inset-2 rounded-full border border-white/20"></div>
+                  <div className="absolute inset-4 rounded-full border border-white/10"></div>
+                  <div className="relative z-10 w-8 h-8 rounded-full bg-gradient-to-br from-lime-400/30 to-green-400/30 backdrop-blur-sm"></div>
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-2">나의 독서 바이브</h2>
@@ -164,21 +171,21 @@ const MyReviews = () => {
                     onClick={() => toggleReview(review.id)}
                   >
                     <CardHeader className="hover:bg-gray-800/30 transition-colors">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                           <Badge 
                             variant="outline" 
                             className={`${
                               review.type === "완독" 
                                 ? "bg-lime-500/20 text-lime-400 border-lime-500/30" 
                                 : "bg-blue-500/20 text-blue-400 border-blue-500/30"
-                            }`}
+                            } self-start`}
                           >
                             {review.type}
                           </Badge>
-                          <div className="flex items-center gap-2 text-gray-400">
+                          <div className="flex items-center gap-2 text-gray-400 text-sm">
                             <Calendar className="w-4 h-4" />
-                            <span className="text-sm">{review.date}</span>
+                            <span>{review.date}</span>
                           </div>
                           {review.rating && (
                             <div className="flex items-center gap-1">
@@ -187,8 +194,15 @@ const MyReviews = () => {
                             </div>
                           )}
                         </div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex gap-1">
+                        <div className="flex items-center justify-between sm:justify-end gap-2">
+                          <div className="flex gap-1 sm:hidden">
+                            {review.emotions.slice(0, 2).map((emotion, index) => (
+                              <span key={index} className="text-xs bg-gray-700 px-2 py-1 rounded">
+                                {emotion.split(' ')[0]}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="hidden sm:flex gap-1">
                             {review.emotions.slice(0, 3).map((emotion, index) => (
                               <span key={index} className="text-xs bg-gray-700 px-2 py-1 rounded">
                                 {emotion.split(' ')[0]}
@@ -196,9 +210,9 @@ const MyReviews = () => {
                             ))}
                           </div>
                           {openReviews.includes(review.id) ? (
-                            <ChevronDown className="w-5 h-5 text-gray-400" />
+                            <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
                           ) : (
-                            <ChevronRight className="w-5 h-5 text-gray-400" />
+                            <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
                           )}
                         </div>
                       </div>
