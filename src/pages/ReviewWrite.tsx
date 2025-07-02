@@ -180,7 +180,7 @@ ${formData.isIntermediate ? "아직 완독하지는 않았지만, " : ""}읽기 
                 variant="outline"
                 size="sm"
                 onClick={handleTempSave}
-                className="text-gray-300 border-gray-700 hover:bg-gray-800"
+                className="text-black border-gray-700 hover:bg-gray-800 bg-white"
               >
                 <Save className="w-4 h-4 mr-2" />
                 임시저장
@@ -243,11 +243,14 @@ ${formData.isIntermediate ? "아직 완독하지는 않았지만, " : ""}읽기 
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-gray-800 border-gray-700">
-                      {[1,2,3,4,5].map((count) => (
+                      {[1,2,3,4].map((count) => (
                         <SelectItem key={count} value={count.toString()} className="text-white hover:bg-gray-700">
                           {count}회독
                         </SelectItem>
                       ))}
+                      <SelectItem value="5" className="text-white hover:bg-gray-700">
+                        5회독 이상
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -263,10 +266,10 @@ ${formData.isIntermediate ? "아직 완독하지는 않았지만, " : ""}읽기 
                     max={5}
                     min={1}
                     step={0.5}
-                    className="flex-1"
+                    className="flex-1 [&_.range]:bg-gradient-to-r [&_.range]:from-lime-500 [&_.range]:to-green-500 [&_.thumb]:bg-lime-500 [&_.thumb]:border-lime-600"
                   />
                   <div className="flex items-center gap-1">
-                    <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                    <Star className="w-5 h-5 text-lime-400 fill-lime-400" />
                     <span className="font-semibold text-lg text-white">{formData.rating[0]}</span>
                   </div>
                 </div>
@@ -283,8 +286,8 @@ ${formData.isIntermediate ? "아직 완독하지는 않았지만, " : ""}읽기 
                       onClick={() => handleEmotionToggle(emotion)}
                       className={`text-sm transition-all border-gray-700 ${
                         formData.emotions.includes(emotion)
-                          ? "bg-gray-700 text-white border-gray-600"
-                          : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                          ? "bg-gray-700 text-black border-gray-600"
+                          : "text-black hover:bg-gray-800 hover:text-black"
                       }`}
                     >
                       {emotion}

@@ -20,9 +20,6 @@ const Index = () => {
             <BookOpen className="w-8 h-8 text-white" />
             <h1 className="text-4xl font-bold text-white tracking-tight">BookVibe</h1>
           </div>
-          <p className="text-gray-300 text-lg font-light tracking-wide">
-            힙한 독서, AI와 함께.
-          </p>
         </div>
 
         {/* Navigation */}

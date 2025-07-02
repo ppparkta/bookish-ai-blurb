@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -131,6 +130,10 @@ const BookShelf = () => {
     });
   };
 
+  const handleViewReviews = (book: Book) => {
+    navigate('/my-reviews', { state: { book } });
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "want-to-read":
@@ -216,7 +219,8 @@ const BookShelf = () => {
                   <img
                     src={book.cover}
                     alt={book.title}
-                    className="w-20 h-28 object-cover rounded shadow-lg"
+                    className="w-20 h-28 object-cover rounded shadow-lg cursor-pointer"
+                    onClick={() => (book.status === "reading" || book.status === "completed") && handleViewReviews(book)}
                   />
                   {book.hasReview && (
                     <div className="absolute -top-2 -right-2 bg-lime-500 rounded-full p-1">
@@ -227,7 +231,12 @@ const BookShelf = () => {
                 <div className="flex-1 space-y-2 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-white group-hover:text-lime-300 transition-colors truncate">{book.title}</h3>
+                      <h3 
+                        className="font-semibold text-white group-hover:text-lime-300 transition-colors truncate cursor-pointer"
+                        onClick={() => (book.status === "reading" || book.status === "completed") && handleViewReviews(book)}
+                      >
+                        {book.title}
+                      </h3>
                       <p className="text-gray-400 text-sm truncate">{book.author}</p>
                       <div className="flex flex-wrap gap-1 mt-1">
                         {book.category && (
