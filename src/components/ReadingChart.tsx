@@ -30,7 +30,7 @@ const ReadingChart = ({ book, onClose }: ReadingChartProps) => {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <Card className="bg-gray-900/95 backdrop-blur-lg border border-lime-500/30 shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <Card className="bg-gray-900/95 backdrop-blur-lg border border-gray-700/50 shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-gray-700/30">
           <CardTitle className="text-xl flex items-center gap-2 text-white">
             <TrendingUp className="w-5 h-5 text-lime-400" />
@@ -88,7 +88,7 @@ const ReadingChart = ({ book, onClose }: ReadingChartProps) => {
                   <Tooltip 
                     contentStyle={{
                       backgroundColor: '#1F2937',
-                      border: '1px solid #84cc16',
+                      border: '1px solid #374151',
                       borderRadius: '8px',
                       color: '#F9FAFB'
                     }}
