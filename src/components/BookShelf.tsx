@@ -134,11 +134,11 @@ const BookShelf = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "want-to-read":
-        return <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/30">읽고 싶은</Badge>;
+        return <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/30 text-xs whitespace-nowrap">읽고 싶은</Badge>;
       case "reading":
-        return <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/30">읽는 중</Badge>;
+        return <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/30 text-xs whitespace-nowrap">읽는 중</Badge>;
       case "completed":
-        return <Badge variant="outline" className="bg-purple-500/10 text-purple-400 border-purple-500/30">완독</Badge>;
+        return <Badge variant="outline" className="bg-purple-500/10 text-purple-400 border-purple-500/30 text-xs whitespace-nowrap">완독</Badge>;
       default:
         return null;
     }
@@ -219,28 +219,32 @@ const BookShelf = () => {
                     className="w-20 h-28 object-cover rounded shadow-lg"
                   />
                   {book.hasReview && (
-                    <div className="absolute -top-2 -right-2 bg-blue-600 rounded-full p-1">
-                      <FileText className="w-3 h-3 text-white" />
+                    <div className="absolute -top-2 -right-2 bg-lime-500 rounded-full p-1">
+                      <FileText className="w-3 h-3 text-black" />
                     </div>
                   )}
                 </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-white group-hover:text-blue-300 transition-colors">{book.title}</h3>
-                      <p className="text-gray-400 text-sm">{book.author}</p>
-                      {book.category && (
-                        <Badge variant="outline" className="mt-1 bg-gray-800/50 text-gray-300 border-gray-600 text-xs">
-                          {book.category}
-                        </Badge>
-                      )}
-                      {book.readCount && book.readCount > 1 && (
-                        <Badge variant="outline" className="mt-1 ml-2 bg-purple-800/50 text-purple-300 border-purple-600 text-xs">
-                          {book.readCount}회독
-                        </Badge>
-                      )}
+                <div className="flex-1 space-y-2 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-white group-hover:text-lime-300 transition-colors truncate">{book.title}</h3>
+                      <p className="text-gray-400 text-sm truncate">{book.author}</p>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {book.category && (
+                          <Badge variant="outline" className="bg-gray-800/50 text-gray-300 border-gray-600 text-xs">
+                            {book.category}
+                          </Badge>
+                        )}
+                        {book.readCount && book.readCount > 1 && (
+                          <Badge variant="outline" className="bg-purple-800/50 text-purple-300 border-purple-600 text-xs">
+                            {book.readCount}회독
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                    {getStatusBadge(book.status)}
+                    <div className="flex-shrink-0">
+                      {getStatusBadge(book.status)}
+                    </div>
                   </div>
                   
                   {book.rating && (
@@ -257,7 +261,7 @@ const BookShelf = () => {
                       </div>
                       <div className="w-full bg-gray-700 rounded-full h-2">
                         <div 
-                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                          className="bg-gradient-to-r from-lime-500 to-green-500 h-2 rounded-full transition-all duration-500"
                           style={{ width: `${(book.currentPage / book.totalPages) * 100}%` }}
                         />
                       </div>
@@ -273,7 +277,7 @@ const BookShelf = () => {
                     <Button
                       size="sm"
                       onClick={() => handleStartReading(book)}
-                      className="bg-green-600 hover:bg-green-700 text-white transition-all duration-200"
+                      className="bg-gray-600 hover:bg-gray-700 text-white transition-all duration-200"
                     >
                       <Play className="w-3 h-3 mr-1" />
                       읽기 시작
@@ -281,7 +285,7 @@ const BookShelf = () => {
                     <Button
                       size="sm"
                       onClick={() => handleComplete(book)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200"
+                      className="bg-gradient-to-r from-lime-500 to-green-500 hover:from-lime-600 hover:to-green-600 text-black transition-all duration-200"
                     >
                       <CheckCircle className="w-3 h-3 mr-1" />
                       완독했어요
@@ -297,7 +301,7 @@ const BookShelf = () => {
                         setSelectedBook(book);
                         setShowProgressModal(true);
                       }}
-                      className="bg-orange-600 hover:bg-orange-700 text-white transition-all duration-200"
+                      className="bg-gray-600 hover:bg-gray-700 text-white transition-all duration-200"
                     >
                       <Edit className="w-3 h-3 mr-1" />
                       진행률 업데이트
@@ -308,7 +312,7 @@ const BookShelf = () => {
                         setSelectedBook(book);
                         setShowChart(true);
                       }}
-                      className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200"
+                      className="bg-gray-600 hover:bg-gray-700 text-white transition-all duration-200"
                     >
                       <BarChart3 className="w-3 h-3 mr-1" />
                       진행도 확인
@@ -316,7 +320,7 @@ const BookShelf = () => {
                     <Button
                       size="sm"
                       onClick={() => handleWriteReview(book, true)}
-                      className="bg-cyan-600 hover:bg-cyan-700 text-white transition-all duration-200"
+                      className="bg-gray-600 hover:bg-gray-700 text-white transition-all duration-200"
                     >
                       <FileText className="w-3 h-3 mr-1" />
                       중간 독후감
@@ -324,7 +328,7 @@ const BookShelf = () => {
                     <Button
                       size="sm"
                       onClick={() => handleWriteReview(book)}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-200"
+                      className="bg-gray-600 hover:bg-gray-700 text-white transition-all duration-200"
                     >
                       <Edit className="w-3 h-3 mr-1" />
                       독후감 작성
@@ -332,7 +336,7 @@ const BookShelf = () => {
                     <Button
                       size="sm"
                       onClick={() => handleComplete(book)}
-                      className="bg-green-600 hover:bg-green-700 text-white transition-all duration-200"
+                      className="bg-gradient-to-r from-lime-500 to-green-500 hover:from-lime-600 hover:to-green-600 text-black transition-all duration-200"
                     >
                       <CheckCircle className="w-3 h-3 mr-1" />
                       완독했어요
@@ -348,7 +352,7 @@ const BookShelf = () => {
                         setSelectedBook(book);
                         setShowChart(true);
                       }}
-                      className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200"
+                      className="bg-gray-600 hover:bg-gray-700 text-white transition-all duration-200"
                     >
                       <BarChart3 className="w-3 h-3 mr-1" />
                       진행도 확인
@@ -356,7 +360,7 @@ const BookShelf = () => {
                     <Button
                       size="sm"
                       onClick={() => handleWriteReview(book)}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-200"
+                      className="bg-gray-600 hover:bg-gray-700 text-white transition-all duration-200"
                     >
                       <Edit className="w-3 h-3 mr-1" />
                       독후감 수정

@@ -45,8 +45,9 @@ const ReadingProgress = () => {
     }
   ];
 
-  // 책 색상은 무채색 계열로 제한
+  // 책 색상은 무채색 계열로 제한하되 일부는 연두색
   const grayColors = ['#2a2a2a', '#404040', '#525252', '#666666', '#737373', '#8a8a8a', '#a3a3a3', '#b8b8b8', '#3a3a3a', '#4d4d4d'];
+  const greenColors = ['#84cc16', '#65a30d'];
 
   // 해시 함수(책 제목+페이지수로 고정된 숫자 생성)
   function getHash(str: string): number {
@@ -58,8 +59,13 @@ const ReadingProgress = () => {
     return Math.abs(hash);
   }
 
-  // 책별 색상 결정
-  function getBookColor(title: string, pages: number): string {
+  // 책별 색상 결정 (일부는 연두색)
+  function getBookColor(title: string, pages: number, index: number): string {
+    // 첫 번째와 세 번째 책을 연두색으로
+    if (index === 0 || index === 2) {
+      const greenIdx = getHash(title + pages + 'green') % greenColors.length;
+      return greenColors[greenIdx];
+    }
     const grayIdx = getHash(title + pages + 'gray') % grayColors.length;
     return grayColors[grayIdx];
   }
@@ -131,7 +137,7 @@ const ReadingProgress = () => {
             </div>
             <Progress 
               value={(readingStats.booksThisMonth / readingStats.monthlyGoal) * 100} 
-              className="h-3 bg-gray-700 [&_.bg-primary]:bg-gradient-to-r [&_.bg-primary]:from-blue-500 [&_.bg-primary]:to-purple-500"
+              className="h-3 bg-gray-700 [&_.bg-primary]:bg-gradient-to-r [&_.bg-primary]:from-lime-500 [&_.bg-primary]:to-green-500"
             />
             <p className="text-gray-300 text-sm">
               {readingStats.monthlyGoal - readingStats.booksThisMonth > 0 
@@ -157,7 +163,7 @@ const ReadingProgress = () => {
               {completedBooks.map((book, index) => {
                 const bookHeight = Math.max(book.pages / 8, 20); // 책 두께 계산 
                 const bookWidth = getBookWidth(book.title, book.pages); // 랜덤 너비
-                const bookColor = getBookColor(book.title, book.pages);
+                const bookColor = getBookColor(book.title, book.pages, index);
                 return (
                   <div
                     key={index}
@@ -229,7 +235,7 @@ const ReadingProgress = () => {
                   </div>
                   <div className="w-full bg-gray-700 rounded-full h-2">
                     <div
-                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                      className="bg-gradient-to-r from-lime-500 to-green-500 h-2 rounded-full transition-all duration-500"
                       style={{ width: `${book.progress}%` }}
                     ></div>
                   </div>

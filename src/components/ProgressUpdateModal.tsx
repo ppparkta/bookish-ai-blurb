@@ -53,7 +53,7 @@ const ProgressUpdateModal = ({ book, onClose, onUpdate }: ProgressUpdateModalPro
       <Card className="bg-gray-900/95 backdrop-blur-lg border border-gray-700/50 shadow-2xl w-full max-w-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-gray-700/30">
           <CardTitle className="text-xl flex items-center gap-2 text-white">
-            <TrendingUp className="w-5 h-5 text-blue-400" />
+            <TrendingUp className="w-5 h-5 text-lime-400" />
             진행률 업데이트
           </CardTitle>
           <Button
@@ -93,7 +93,7 @@ const ProgressUpdateModal = ({ book, onClose, onUpdate }: ProgressUpdateModalPro
                 value={currentPage}
                 onChange={(e) => setCurrentPage(e.target.value)}
                 placeholder={`0 ~ ${book.totalPages}`}
-                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-blue-500"
+                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-lime-500"
               />
             </div>
 
@@ -105,7 +105,7 @@ const ProgressUpdateModal = ({ book, onClose, onUpdate }: ProgressUpdateModalPro
               </div>
               <div className="w-full bg-gray-700 rounded-full h-3">
                 <div 
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-lime-500 to-green-500 h-3 rounded-full transition-all duration-500"
                   style={{ width: `${progressPercentage}%` }}
                 />
               </div>
@@ -126,7 +126,7 @@ const ProgressUpdateModal = ({ book, onClose, onUpdate }: ProgressUpdateModalPro
             </Button>
             <Button
               onClick={handleUpdate}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+              className="flex-1 bg-gradient-to-r from-lime-500 to-green-500 text-black hover:from-lime-600 hover:to-green-600"
             >
               업데이트
             </Button>

@@ -322,7 +322,7 @@ ${formData.isIntermediate ? "아직 완독하지는 않았지만, " : ""}읽기 
               <Button
                 onClick={handleGenerateReview}
                 disabled={isGenerating}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 font-bold shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-lime-500 to-green-500 text-black hover:from-lime-600 hover:to-green-600 font-bold shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 {isGenerating ? "AI가 독후감을 작성하는 중..." : "AI로 독후감 생성하기 ✨"}
@@ -349,7 +349,7 @@ ${formData.isIntermediate ? "아직 완독하지는 않았지만, " : ""}읽기 
                 {!formData.isIntermediate && book.status !== "completed" && (
                   <Button
                     onClick={handleComplete}
-                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700"
+                    className="flex-1 bg-gradient-to-r from-lime-500 to-green-500 text-black hover:from-lime-600 hover:to-green-600"
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
                     완독했어요

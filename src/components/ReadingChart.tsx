@@ -33,7 +33,7 @@ const ReadingChart = ({ book, onClose }: ReadingChartProps) => {
       <Card className="bg-gray-900/95 backdrop-blur-lg border border-gray-700/50 shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-gray-700/30">
           <CardTitle className="text-xl flex items-center gap-2 text-white">
-            <TrendingUp className="w-5 h-5 text-blue-400" />
+            <TrendingUp className="w-5 h-5 text-lime-400" />
             독서 진행도 분석
           </CardTitle>
           <Button
@@ -100,10 +100,10 @@ const ReadingChart = ({ book, onClose }: ReadingChartProps) => {
                   <Line 
                     type="monotone" 
                     dataKey="progress" 
-                    stroke="#3B82F6" 
+                    stroke="#84cc16" 
                     strokeWidth={3}
-                    dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
-                    activeDot={{ r: 6, stroke: '#3B82F6', strokeWidth: 2 }}
+                    dot={{ fill: '#84cc16', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: '#84cc16', strokeWidth: 2 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -113,7 +113,7 @@ const ReadingChart = ({ book, onClose }: ReadingChartProps) => {
           {/* Reading Stats */}
           <div className="grid md:grid-cols-3 gap-4">
             <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/30 text-center">
-              <div className="text-2xl font-bold text-blue-400 mb-1">
+              <div className="text-2xl font-bold text-lime-400 mb-1">
                 {Math.round((book.currentPage / book.totalPages) * 100)}%
               </div>
               <div className="text-gray-300 text-sm">현재 진행률</div>
@@ -125,7 +125,7 @@ const ReadingChart = ({ book, onClose }: ReadingChartProps) => {
               <div className="text-gray-300 text-sm">남은 페이지</div>
             </div>
             <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/30 text-center">
-              <div className="text-2xl font-bold text-purple-400 mb-1">
+              <div className="text-2xl font-bold text-lime-300 mb-1">
                 {Math.ceil((book.totalPages - book.currentPage) / 30)}
               </div>
               <div className="text-gray-300 text-sm">예상 완독일 (일 30p 기준)</div>
@@ -136,7 +136,7 @@ const ReadingChart = ({ book, onClose }: ReadingChartProps) => {
           <div className="flex justify-center pt-4">
             <Button
               onClick={onClose}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 px-8"
+              className="bg-gradient-to-r from-lime-500 to-green-500 text-black hover:from-lime-600 hover:to-green-600 px-8"
             >
               확인
             </Button>
