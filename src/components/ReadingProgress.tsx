@@ -1,17 +1,10 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { TrendingUp, Clock, Target, BookOpen, CheckCircle } from "lucide-react";
 
 const ReadingProgress = () => {
-  const readingStats = {
-    booksThisMonth: 3,
-    totalBooks: 12,
-    monthlyGoal: 4,
-    averagePages: 280,
-    totalPages: 3360,
-    readingStreak: 7
-  };
-
+  // 실제 완독한 책들 데이터
   const completedBooks = [
     { title: "달러구트 꿈 백화점", pages: 284, width: 180 },
     { title: "아몬드", pages: 267, width: 220 },
@@ -22,6 +15,18 @@ const ReadingProgress = () => {
     { title: "해리포터와 마법사의 돌", pages: 423, width: 210 },
     { title: "데미안", pages: 201, width: 170 },
   ];
+
+  // 총 완독 페이지 계산
+  const totalCompletedPages = completedBooks.reduce((sum, book) => sum + book.pages, 0);
+
+  const readingStats = {
+    booksThisMonth: 3,
+    totalBooks: completedBooks.length,
+    monthlyGoal: 4,
+    averagePages: Math.round(totalCompletedPages / completedBooks.length),
+    totalPages: totalCompletedPages, // 실제 완독 페이지와 동일하게
+    readingStreak: 7
+  };
 
   const currentReading = [
     {
@@ -40,12 +45,11 @@ const ReadingProgress = () => {
     }
   ];
 
-  // 책 색상은 해시 기반으로 고정하되, 기본은 무채색 계열, 10~20% 확률로만 연두색 계열
-  const greenColors = ['#A8FF78', '#CFFFAC', '#B6FFCE', '#D0FFB7', '#E0FFC2'];
+  // 책 색상은 무채색 계열로 제한
   const grayColors = ['#2a2a2a', '#404040', '#525252', '#666666', '#737373', '#8a8a8a', '#a3a3a3', '#b8b8b8', '#3a3a3a', '#4d4d4d'];
 
   // 해시 함수(책 제목+페이지수로 고정된 숫자 생성)
-  function getHash(str) {
+  function getHash(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = ((hash << 5) - hash) + str.charCodeAt(i);
@@ -54,36 +58,23 @@ const ReadingProgress = () => {
     return Math.abs(hash);
   }
 
-  // 책별 색상 결정: 해시값의 마지막 자리를 기준으로 0~1(20%)이면 연두, 나머지는 무채색
-  function getBookColor(title, pages) {
-    const hash = getHash(title + pages);
-    if (hash % 10 === 0) {
-      // 10% 확률로 연두색 계열
-      const greenIdx = getHash(title + pages + 'green') % greenColors.length;
-      return greenColors[greenIdx];
-    } else {
-      const grayIdx = getHash(title + pages + 'gray') % grayColors.length;
-      return grayColors[grayIdx];
-    }
+  // 책별 색상 결정
+  function getBookColor(title: string, pages: number): string {
+    const grayIdx = getHash(title + pages + 'gray') % grayColors.length;
+    return grayColors[grayIdx];
   }
 
-  // 완독한 책들 중 2권만 무채색으로 랜덤하게 선택(책 배열이 바뀌지 않는 한 고정)
-  const grayBookIndexes = (() => {
-    if (completedBooks.length <= 2) return completedBooks.map((_, i) => i);
-    // completedBooks의 각 책에 대해 해시값을 구해 정렬 후 앞 2개 인덱스만 gray로
-    const hashes = completedBooks.map((book, idx) => ({
-      idx,
-      hash: getHash(book.title + book.pages)
-    }));
-    hashes.sort((a, b) => a.hash - b.hash);
-    return [hashes[0].idx, hashes[1].idx];
-  })();
+  // 책별 랜덤 크기 생성 (폭)
+  function getBookWidth(title: string, pages: number): number {
+    const hash = getHash(title + pages + 'width');
+    return 160 + (hash % 100); // 160~260px 범위
+  }
 
   return (
     <div className="space-y-6">
       {/* Monthly Stats */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-[#23272f] backdrop-blur-xl border border-white/10 shadow-2xl">
+        <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
           <CardContent className="p-4 text-center">
             <div className="text-3xl font-bold text-white mb-2">{readingStats.booksThisMonth}</div>
             <div className="text-gray-300 text-sm flex items-center justify-center gap-1">
@@ -93,7 +84,7 @@ const ReadingProgress = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-[#23272f] backdrop-blur-xl border border-white/10 shadow-2xl">
+        <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
           <CardContent className="p-4 text-center">
             <div className="text-3xl font-bold text-white mb-2">{readingStats.readingStreak}</div>
             <div className="text-gray-300 text-sm flex items-center justify-center gap-1">
@@ -103,9 +94,9 @@ const ReadingProgress = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-[#23272f] backdrop-blur-xl border border-white/10 shadow-2xl">
+        <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
           <CardContent className="p-4 text-center">
-            <div className="text-3xl font-bold text-white mb-2">{readingStats.totalPages}</div>
+            <div className="text-3xl font-bold text-white mb-2">{readingStats.totalPages.toLocaleString()}</div>
             <div className="text-gray-300 text-sm flex items-center justify-center gap-1">
               <TrendingUp className="w-4 h-4" />
               총 읽은 페이지
@@ -113,7 +104,7 @@ const ReadingProgress = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-[#23272f] backdrop-blur-xl border border-white/10 shadow-2xl">
+        <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
           <CardContent className="p-4 text-center">
             <div className="text-3xl font-bold text-white mb-2">{readingStats.averagePages}</div>
             <div className="text-gray-300 text-sm flex items-center justify-center gap-1">
@@ -125,7 +116,7 @@ const ReadingProgress = () => {
       </div>
 
       {/* Monthly Goal */}
-      <Card className="bg-[#23272f] backdrop-blur-xl border border-white/10 shadow-2xl">
+      <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
             <Target className="w-5 h-5" />
@@ -140,7 +131,7 @@ const ReadingProgress = () => {
             </div>
             <Progress 
               value={(readingStats.booksThisMonth / readingStats.monthlyGoal) * 100} 
-              className="h-3 bg-[#A8FF78]/20 [&_.bg-primary]:bg-[#A8FF78]"
+              className="h-3 bg-gray-700 [&_.bg-primary]:bg-gradient-to-r [&_.bg-primary]:from-blue-500 [&_.bg-primary]:to-purple-500"
             />
             <p className="text-gray-300 text-sm">
               {readingStats.monthlyGoal - readingStats.booksThisMonth > 0 
@@ -153,7 +144,7 @@ const ReadingProgress = () => {
       </Card>
 
       {/* Book Stack Visualization - 세로 스크롤, 가로 눕힌 책들 */}
-      <Card className="bg-[#23272f] backdrop-blur-xl border border-white/10 shadow-2xl">
+      <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
             <BookOpen className="w-5 h-5" />
@@ -165,10 +156,8 @@ const ReadingProgress = () => {
             <div className="flex flex-col items-center space-y-1">
               {completedBooks.map((book, index) => {
                 const bookHeight = Math.max(book.pages / 8, 20); // 책 두께 계산 
-                const bookWidth = book.width; // 랜덤 너비
+                const bookWidth = getBookWidth(book.title, book.pages); // 랜덤 너비
                 const bookColor = getBookColor(book.title, book.pages);
-                // 연두색 계열이면 글씨 어둡게, 무채색이면 흰색
-                const isGreen = ['#A8FF78', '#CFFFAC', '#B6FFCE', '#D0FFB7', '#E0FFC2'].includes(bookColor);
                 return (
                   <div
                     key={index}
@@ -176,7 +165,7 @@ const ReadingProgress = () => {
                     style={{ 
                       height: `${bookHeight}px`,
                       width: `${bookWidth}px`,
-                      maxWidth: '250px'
+                      maxWidth: '280px'
                     }}
                   >
                     {/* 가로로 눕힌 책 모양 */}
@@ -186,10 +175,10 @@ const ReadingProgress = () => {
                     >
                       {/* 책 제목 (가로로) */}
                       <div className="absolute inset-0 flex items-center px-4">
-                        <div className={`text-sm font-semibold truncate flex-1 ${isGreen ? 'text-gray-900' : 'text-white'}`}>
+                        <div className="text-sm font-semibold truncate flex-1 text-white">
                           {book.title}
                         </div>
-                        <div className={`${isGreen ? 'text-gray-900' : 'text-white/80'} text-xs ml-4`}>
+                        <div className="text-white/80 text-xs ml-4">
                           {book.pages}p
                         </div>
                       </div>
@@ -200,7 +189,7 @@ const ReadingProgress = () => {
                     </div>
                     {/* 호버 툴팁 */}
                     <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
-                      <div className="bg-white text-black text-xs rounded px-2 py-1 whitespace-nowrap">
+                      <div className="bg-white text-black text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
                         {book.title}<br />
                         {book.pages}페이지
                       </div>
@@ -211,13 +200,13 @@ const ReadingProgress = () => {
             </div>
           </div>
           <p className="text-gray-300 text-sm mt-4 text-center">
-            총 {completedBooks.reduce((sum, book) => sum + book.pages, 0)}페이지를 읽었어요! 📚
+            총 {totalCompletedPages.toLocaleString()}페이지를 읽었어요! 📚
           </p>
         </CardContent>
       </Card>
 
       {/* Current Reading */}
-      <Card className="bg-[#23272f] backdrop-blur-xl border border-white/10 shadow-2xl">
+      <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
             <BookOpen className="w-5 h-5" />
@@ -227,7 +216,7 @@ const ReadingProgress = () => {
         <CardContent className="p-6">
           <div className="space-y-6">
             {currentReading.map((book, index) => (
-              <div key={index} className="bg-white/5 rounded-lg p-4 space-y-3 border border-white/10">
+              <div key={index} className="bg-gray-800/50 rounded-lg p-4 space-y-3 border border-gray-700/30">
                 <div className="flex justify-between items-start">
                   <h3 className="font-semibold text-white text-lg">{book.title}</h3>
                   <span className="text-gray-300 text-sm">{book.daysReading}일째 읽는 중</span>
@@ -236,11 +225,11 @@ const ReadingProgress = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm text-gray-300">
                     <span>읽기 진행률</span>
-                    <span>{book.pagesRead} / {book.totalPages} 페이지 ({book.progress}%)</span>
+                    <span className="text-white font-medium">{book.pagesRead} / {book.totalPages} 페이지 ({book.progress}%)</span>
                   </div>
-                  <div className="w-full bg-[#A8FF78]/20 rounded-full h-2">
+                  <div className="w-full bg-gray-700 rounded-full h-2">
                     <div
-                      className="bg-gradient-to-r from-[#A8FF78] to-green-200 h-2 rounded-full transition-all duration-500"
+                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
                       style={{ width: `${book.progress}%` }}
                     ></div>
                   </div>

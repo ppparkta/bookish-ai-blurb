@@ -1,381 +1,406 @@
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BookOpen, Clock, CheckCircle, Edit3, TrendingUp, Search, Filter, Star } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Search, Filter, SortAsc, BookOpen, Play, BarChart3, Edit, CheckCircle, Star, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import ProgressUpdateModal from "./ProgressUpdateModal";
 import ReadingChart from "./ReadingChart";
 
+interface Book {
+  id: number;
+  title: string;
+  author: string;
+  cover: string;
+  status: "want-to-read" | "reading" | "completed";
+  totalPages: number;
+  currentPage: number;
+  rating?: number;
+  hasReview: boolean;
+  category?: string;
+  readCount?: number;
+}
+
 const BookShelf = () => {
   const navigate = useNavigate();
-  const [selectedBook, setSelectedBook] = useState<any>(null);
-  const [showChart, setShowChart] = useState<number | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("completedDate");
-  const [filterStatus, setFilterStatus] = useState("all");
-
-  // Mock data - 확장된 데이터
-  const [userBooks, setUserBooks] = useState([
+  const { toast } = useToast();
+  
+  const [books, setBooks] = useState<Book[]>([
     {
       id: 1,
-      title: "달러구트 꿈 백화점",
-      author: "이미예",
-      cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=200&h=300&fit=crop",
-      status: "completed",
-      progress: 100,
-      totalPages: 284,
-      currentPage: 284,
-      rating: 4.5,
-      reviewPreview: "꿈이라는 소재를 정말 창의적으로 풀어낸 작품이었다...",
-      completedDate: "2024-01-15"
+      title: "미드나이트 라이브러리",
+      author: "매트 헤이그",
+      cover: "/placeholder.svg",
+      status: "reading",
+      totalPages: 320,
+      currentPage: 208,
+      hasReview: false,
+      category: "소설",
+      readCount: 1
     },
     {
       id: 2,
-      title: "미드나이트 라이브러리",
-      author: "매트 헤이그",
-      cover: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&h=300&fit=crop",
-      status: "reading",
-      progress: 65,
-      totalPages: 320,
-      currentPage: 208,
-      rating: null,
-      reviewPreview: null,
-      completedDate: null
+      title: "아몬드",
+      author: "손원평",
+      cover: "/placeholder.svg",
+      status: "completed",
+      totalPages: 267,
+      currentPage: 267,
+      rating: 4.5,
+      hasReview: true,
+      category: "소설",
+      readCount: 1
     },
     {
       id: 3,
-      title: "보건교사 안은영",
-      author: "정세랑",
-      cover: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=300&fit=crop",
-      status: "wishlist",
-      progress: 0,
-      totalPages: 396,
+      title: "달러구트 꿈 백화점",
+      author: "이미예",
+      cover: "/placeholder.svg",
+      status: "want-to-read",
+      totalPages: 284,
       currentPage: 0,
-      rating: null,
-      reviewPreview: null,
-      completedDate: null
+      hasReview: false,
+      category: "소설",
+      readCount: 1
     },
-    {
-      id: 4,
-      title: "아몬드",
-      author: "손원평",
-      cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&h=300&fit=crop",
-      status: "completed",
-      progress: 100,
-      totalPages: 267,
-      currentPage: 267,
-      rating: 4.8,
-      reviewPreview: "감정에 대한 깊은 이해를 얻게 해준 소설...",
-      completedDate: "2024-01-20"
-    }
   ]);
 
-  // 필터링 및 정렬된 책 목록
-  const filteredAndSortedBooks = userBooks
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("recent");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [showProgressModal, setShowProgressModal] = useState(false);
+  const [showChart, setShowChart] = useState(false);
+
+  // 필터링 및 정렬
+  const filteredBooks = books
     .filter(book => {
-      const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesFilter = filterStatus === "all" || book.status === filterStatus;
       return matchesSearch && matchesFilter;
     })
     .sort((a, b) => {
       switch (sortBy) {
-        case "completedDate":
-          if (!a.completedDate && !b.completedDate) return 0;
-          if (!a.completedDate) return 1;
-          if (!b.completedDate) return -1;
-          return new Date(b.completedDate).getTime() - new Date(a.completedDate).getTime();
         case "progress":
-          return b.progress - a.progress;
+          return ((b.currentPage / b.totalPages) * 100) - ((a.currentPage / a.totalPages) * 100);
         case "rating":
-          if (!a.rating && !b.rating) return 0;
-          if (!a.rating) return 1;
-          if (!b.rating) return -1;
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
+        case "recent":
         default:
-          return 0;
+          return b.id - a.id;
       }
     });
 
-  const getReadingHistory = (bookId: number) => {
-    const mockHistories: { [key: number]: any[] } = {
-      1: [
-        { date: "1/1", page: 50, progress: 18 },
-        { date: "1/3", page: 120, progress: 42 },
-        { date: "1/5", page: 200, progress: 70 },
-        { date: "1/7", page: 284, progress: 100 }
-      ],
-      2: [
-        { date: "1/10", page: 80, progress: 25 },
-        { date: "1/12", page: 150, progress: 47 },
-        { date: "1/14", page: 208, progress: 65 }
-      ],
-      4: [
-        { date: "1/16", page: 67, progress: 25 },
-        { date: "1/18", page: 134, progress: 50 },
-        { date: "1/20", page: 267, progress: 100 }
-      ]
-    };
-    return mockHistories[bookId] || [];
+  const handleStartReading = (book: Book) => {
+    setBooks(books.map(b => 
+      b.id === book.id ? { ...b, status: "reading" as const } : b
+    ));
+    toast({
+      title: "읽기 시작! 📖",
+      description: `"${book.title}" 읽기를 시작했어요`,
+    });
+  };
+
+  const handleComplete = (book: Book) => {
+    setBooks(books.map(b => 
+      b.id === book.id ? { ...b, status: "completed" as const, currentPage: b.totalPages } : b
+    ));
+    toast({
+      title: "완독 완료! 🎉",
+      description: `"${book.title}"를 완독하셨네요! 축하드려요`,
+    });
   };
 
   const handleProgressUpdate = (bookId: number, newPage: number) => {
-    setUserBooks(books => 
-      books.map(book => 
-        book.id === bookId 
-          ? { 
-              ...book, 
-              currentPage: newPage, 
-              progress: Math.round(newPage / book.totalPages * 100),
-              status: newPage === book.totalPages ? "completed" : book.status
-            }
-          : book
-      )
-    );
-    setSelectedBook(null);
+    setBooks(books.map(book => 
+      book.id === bookId ? { ...book, currentPage: newPage } : book
+    ));
+    setShowProgressModal(false);
   };
 
-  const handleStartReading = (bookId: number) => {
-    setUserBooks(books => 
-      books.map(book => 
-        book.id === bookId 
-          ? { ...book, status: "reading" }
-          : book
-      )
-    );
-  };
-
-  const handleMarkCompleted = (bookId: number) => {
-    setUserBooks(books => 
-      books.map(book => 
-        book.id === bookId 
-          ? { 
-              ...book, 
-              status: "completed", 
-              progress: 100,
-              currentPage: book.totalPages,
-              completedDate: new Date().toISOString().split('T')[0]
-            }
-          : book
-      )
-    );
-  };
-
-  const handleReviewWrite = (book: any) => {
-    navigate('/review-write', { state: { book } });
+  const handleWriteReview = (book: Book, isIntermediate = false) => {
+    navigate('/review-write', { 
+      state: { 
+        book: book,
+        isIntermediate: isIntermediate 
+      } 
+    });
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "completed":
-        return (
-          <Badge className="bg-transparent text-[#39B54A] border border-[#A8FF78] font-bold flex items-center text-xs px-2 py-0.5 min-w-0 whitespace-nowrap">
-            <span className="hidden sm:inline-block"><CheckCircle className="w-3 h-3 mr-0.5" /></span>
-            <span className="inline-block sm:hidden">완독</span>
-            <span className="hidden sm:inline-block">완독</span>
-          </Badge>
-        );
+      case "want-to-read":
+        return <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/30">읽고 싶은</Badge>;
       case "reading":
-        return (
-          <Badge className="bg-transparent text-[#6FCF97] border border-[#CFFFAC] font-semibold flex items-center text-xs px-2 py-0.5 min-w-0 whitespace-nowrap">
-            <span className="hidden sm:inline-block"><Clock className="w-3 h-3 mr-0.5" /></span>
-            <span className="inline-block sm:hidden">읽는중</span>
-            <span className="hidden sm:inline-block">읽는중</span>
-          </Badge>
-        );
-      case "wishlist":
-        return (
-          <Badge className="bg-transparent text-[#a3a3a3] border border-[#a3a3a3] font-normal flex items-center text-xs px-2 py-0.5 min-w-0 whitespace-nowrap">
-            <span className="hidden sm:inline-block"><BookOpen className="w-3 h-3 mr-0.5" /></span>
-            <span className="inline-block sm:hidden">예정</span>
-            <span className="hidden sm:inline-block">예정</span>
-          </Badge>
-        );
+        return <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/30">읽는 중</Badge>;
+      case "completed":
+        return <Badge variant="outline" className="bg-purple-500/10 text-purple-400 border-purple-500/30">완독</Badge>;
       default:
         return null;
     }
   };
 
-  const renderStarRating = (rating: number) => {
+  const renderStars = (rating: number) => {
     return (
       <div className="flex items-center gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
+        {[...Array(5)].map((_, i) => (
           <Star
-            key={star}
+            key={i}
             className={`w-4 h-4 ${
-              star <= rating
-                ? "fill-yellow-400 text-yellow-400"
-                : "text-gray-400"
+              i < Math.floor(rating) 
+                ? "text-yellow-400 fill-yellow-400" 
+                : i === Math.floor(rating) && rating % 1 !== 0
+                ? "text-yellow-400 fill-yellow-400"
+                : "text-gray-600"
             }`}
           />
         ))}
-        <span className="text-white text-sm ml-1">{rating}</span>
+        <span className="text-sm text-gray-400 ml-1">{rating}</span>
       </div>
     );
   };
 
   return (
     <div className="space-y-6">
-      <Card className="bg-black/5 backdrop-blur-xl border border-black/10 shadow-2xl">
-        <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
-            <BookOpen className="w-5 h-5" />
-            내 서재 ({filteredAndSortedBooks.length}권)
-          </CardTitle>
-        </CardHeader>
+      {/* 검색 및 필터 */}
+      <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
         <CardContent className="p-6">
-          {/* 검색 및 필터 */}
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
                 placeholder="책 제목으로 검색..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-black/5 border-[#a3a3a3] text-white placeholder:text-gray-300 focus:border-[#a3a3a3]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
               />
             </div>
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-full md:w-48 bg-black/5 border-[#a3a3a3] text-white">
+              <SelectTrigger className="w-full md:w-48 bg-gray-800 border-gray-700 text-white">
+                <SortAsc className="w-4 h-4 mr-2" />
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-white border-black/20">
-                <SelectItem value="completedDate">완독시점 역순</SelectItem>
-                <SelectItem value="progress">읽기 진행률 순</SelectItem>
-                <SelectItem value="rating">별점 순</SelectItem>
+              <SelectContent className="bg-gray-800 border-gray-700">
+                <SelectItem value="recent" className="text-white hover:bg-gray-700">최근 추가순</SelectItem>
+                <SelectItem value="progress" className="text-white hover:bg-gray-700">진행률 순</SelectItem>
+                <SelectItem value="rating" className="text-white hover:bg-gray-700">별점 순</SelectItem>
               </SelectContent>
             </Select>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-full md:w-32 bg-black/5 border-[#a3a3a3] text-white">
+              <SelectTrigger className="w-full md:w-48 bg-gray-800 border-gray-700 text-white">
                 <Filter className="w-4 h-4 mr-2" />
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-white border-black/20">
-                <SelectItem value="all">전체</SelectItem>
-                <SelectItem value="completed">완독</SelectItem>
-                <SelectItem value="reading">읽는중</SelectItem>
-                <SelectItem value="wishlist">읽고싶은</SelectItem>
+              <SelectContent className="bg-gray-800 border-gray-700">
+                <SelectItem value="all" className="text-white hover:bg-gray-700">전체</SelectItem>
+                <SelectItem value="want-to-read" className="text-white hover:bg-gray-700">읽고 싶은</SelectItem>
+                <SelectItem value="reading" className="text-white hover:bg-gray-700">읽는 중</SelectItem>
+                <SelectItem value="completed" className="text-white hover:bg-gray-700">완독</SelectItem>
               </SelectContent>
             </Select>
-          </div>
-
-          {/* 책 목록 */}
-          <div className="grid gap-6">
-            {filteredAndSortedBooks.map((book) => (
-              <div key={book.id}>
-                <div className="bg-[#23272f] backdrop-blur-sm rounded-xl p-6 border border-white/10 w-full">
-                  <div className="flex gap-6 flex-col sm:flex-row items-center sm:items-start">
-                    <img src={book.cover} alt={book.title} className="w-24 h-36 object-cover rounded-lg shadow-lg mb-2 sm:mb-0" />
-                    <div className="flex-1 space-y-3 w-full min-w-0">
-                      <div>
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-bold text-white text-xl">{book.title}</h3>
-                          {getStatusBadge(book.status)}
-                        </div>
-                        <p className="text-gray-200">{book.author}</p>
-                        {book.rating && (
-                          <div className="mt-2">
-                            {renderStarRating(book.rating)}
-                          </div>
-                        )}
-                      </div>
-
-                      {book.status !== "wishlist" && (
-                        <div className="space-y-2 min-h-[56px]">
-                          <div className="flex justify-between text-sm text-gray-200">
-                            <span>읽기 진행률</span>
-                            <span>{book.currentPage} / {book.totalPages} 페이지 ({book.progress}%)</span>
-                          </div>
-                          <div className="w-full bg-[#A8FF78]/20 rounded-full h-2">
-                            <div
-                              className="bg-gradient-to-r from-[#A8FF78] to-green-200 h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${book.progress}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      )}
-
-                      {book.reviewPreview && (
-                        <div className="bg-black/5 rounded-lg p-3 border border-black/10">
-                          <p className="text-gray-100 text-sm italic">"{book.reviewPreview}"</p>
-                        </div>
-                      )}
-
-                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap w-full">
-                        {book.status === "wishlist" && (
-                          <>
-                            <Button 
-                              onClick={() => handleStartReading(book.id)}
-                              className="bg-black text-white hover:bg-gray-800 shadow-lg w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm min-w-0"
-                            >
-                              읽기 시작
-                            </Button>
-                            <Button 
-                              onClick={() => handleMarkCompleted(book.id)}
-                              className="bg-[#A8FF78] text-black hover:bg-[#7ED957] w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm min-w-0"
-                            >
-                              완독했어요
-                            </Button>
-                          </>
-                        )}
-                        {book.status === "reading" && (
-                          <>
-                            {/* 모바일: 한 줄에 하나씩, w-full / 웹: 가로로, sm:w-auto */}
-                            <div className="flex flex-col gap-2 sm:hidden">
-                              <Button onClick={() => handleReviewWrite(book)} className="bg-black text-white hover:bg-gray-800 shadow-lg w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm">독후감 작성</Button>
-                              <Button onClick={() => setShowChart(showChart === book.id ? null : book.id)} className="bg-black/10 text-white border border-black/20 hover:bg-black/20 w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm">진행도 확인</Button>
-                              <Button onClick={() => setSelectedBook(book)} className="bg-black/10 text-white border border-black/20 hover:bg-black/20 w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm">진행률 업데이트</Button>
-                              <Button onClick={() => handleMarkCompleted(book.id)} className="bg-[#A8FF78] text-black hover:bg-[#7ED957] w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm">완독했어요</Button>
-                            </div>
-                            <div className="hidden sm:flex gap-2 flex-wrap">
-                              <Button onClick={() => handleReviewWrite(book)} className="bg-black text-white hover:bg-gray-800 shadow-lg w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm"> <Edit3 className="w-4 h-4 mr-2" />독후감 작성</Button>
-                              <Button onClick={() => setShowChart(showChart === book.id ? null : book.id)} className="bg-black/10 text-white border border-black/20 hover:bg-black/20 w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm"> <TrendingUp className="w-4 h-4 mr-2" />진행도 확인</Button>
-                              <Button onClick={() => setSelectedBook(book)} className="bg-black/10 text-white border border-black/20 hover:bg-black/20 w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm">진행률 업데이트</Button>
-                              <Button onClick={() => handleMarkCompleted(book.id)} className="bg-[#A8FF78] text-black hover:bg-[#7ED957] w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm">완독했어요</Button>
-                            </div>
-                          </>
-                        )}
-                        {book.status === "completed" && (
-                          <>
-                            <div className="flex flex-col gap-2 sm:hidden">
-                              <Button onClick={() => handleReviewWrite(book)} className="bg-black text-white hover:bg-gray-800 shadow-lg w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm">독후감 작성</Button>
-                              <Button onClick={() => setShowChart(showChart === book.id ? null : book.id)} className="bg-black/10 text-white border border-black/20 hover:bg-black/20 w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm">진행도 확인</Button>
-                            </div>
-                            <div className="hidden sm:flex gap-2 flex-wrap">
-                              <Button onClick={() => handleReviewWrite(book)} className="bg-black text-white hover:bg-gray-800 shadow-lg w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm"> <Edit3 className="w-4 h-4 mr-2" />독후감 작성</Button>
-                              <Button onClick={() => setShowChart(showChart === book.id ? null : book.id)} className="bg-black/10 text-white border border-black/20 hover:bg-black/20 w-full py-3 text-base sm:w-auto sm:py-2 sm:text-sm">진행도 확인</Button>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Reading Progress Chart */}
-                {showChart === book.id && book.status !== "wishlist" && (
-                  <div className="mt-4">
-                    <ReadingChart 
-                      bookTitle={book.title}
-                      history={getReadingHistory(book.id)}
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* Progress Update Modal */}
-      {selectedBook && (
+      {/* 책 목록 */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredBooks.map((book) => (
+          <Card key={book.id} className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl hover:shadow-3xl transition-all duration-300 group">
+            <CardContent className="p-6">
+              <div className="flex gap-4">
+                <div className="relative">
+                  <img
+                    src={book.cover}
+                    alt={book.title}
+                    className="w-20 h-28 object-cover rounded shadow-lg"
+                  />
+                  {book.hasReview && (
+                    <div className="absolute -top-2 -right-2 bg-blue-600 rounded-full p-1">
+                      <FileText className="w-3 h-3 text-white" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-semibold text-white group-hover:text-blue-300 transition-colors">{book.title}</h3>
+                      <p className="text-gray-400 text-sm">{book.author}</p>
+                      {book.category && (
+                        <Badge variant="outline" className="mt-1 bg-gray-800/50 text-gray-300 border-gray-600 text-xs">
+                          {book.category}
+                        </Badge>
+                      )}
+                      {book.readCount && book.readCount > 1 && (
+                        <Badge variant="outline" className="mt-1 ml-2 bg-purple-800/50 text-purple-300 border-purple-600 text-xs">
+                          {book.readCount}회독
+                        </Badge>
+                      )}
+                    </div>
+                    {getStatusBadge(book.status)}
+                  </div>
+                  
+                  {book.rating && (
+                    <div className="flex items-center">
+                      {renderStars(book.rating)}
+                    </div>
+                  )}
+
+                  {book.status !== "want-to-read" && (
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-sm text-gray-400">
+                        <span>진행률</span>
+                        <span>{Math.round((book.currentPage / book.totalPages) * 100)}%</span>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                          style={{ width: `${(book.currentPage / book.totalPages) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* 버튼들 */}
+              <div className="mt-4 flex flex-wrap gap-2">
+                {book.status === "want-to-read" && (
+                  <>
+                    <Button
+                      size="sm"
+                      onClick={() => handleStartReading(book)}
+                      className="bg-green-600 hover:bg-green-700 text-white transition-all duration-200"
+                    >
+                      <Play className="w-3 h-3 mr-1" />
+                      읽기 시작
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => handleComplete(book)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200"
+                    >
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      완독했어요
+                    </Button>
+                  </>
+                )}
+
+                {book.status === "reading" && (
+                  <>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setSelectedBook(book);
+                        setShowProgressModal(true);
+                      }}
+                      className="bg-orange-600 hover:bg-orange-700 text-white transition-all duration-200"
+                    >
+                      <Edit className="w-3 h-3 mr-1" />
+                      진행률 업데이트
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setSelectedBook(book);
+                        setShowChart(true);
+                      }}
+                      className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200"
+                    >
+                      <BarChart3 className="w-3 h-3 mr-1" />
+                      진행도 확인
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => handleWriteReview(book, true)}
+                      className="bg-cyan-600 hover:bg-cyan-700 text-white transition-all duration-200"
+                    >
+                      <FileText className="w-3 h-3 mr-1" />
+                      중간 독후감
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => handleWriteReview(book)}
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-200"
+                    >
+                      <Edit className="w-3 h-3 mr-1" />
+                      독후감 작성
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => handleComplete(book)}
+                      className="bg-green-600 hover:bg-green-700 text-white transition-all duration-200"
+                    >
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      완독했어요
+                    </Button>
+                  </>
+                )}
+
+                {book.status === "completed" && (
+                  <>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setSelectedBook(book);
+                        setShowChart(true);
+                      }}
+                      className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200"
+                    >
+                      <BarChart3 className="w-3 h-3 mr-1" />
+                      진행도 확인
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => handleWriteReview(book)}
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white transition-all duration-200"
+                    >
+                      <Edit className="w-3 h-3 mr-1" />
+                      독후감 수정
+                    </Button>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* 모달들 */}
+      {showProgressModal && selectedBook && (
         <ProgressUpdateModal
           book={selectedBook}
-          onClose={() => setSelectedBook(null)}
+          onClose={() => {
+            setShowProgressModal(false);
+            setSelectedBook(null);
+          }}
           onUpdate={handleProgressUpdate}
         />
+      )}
+
+      {showChart && selectedBook && (
+        <ReadingChart
+          book={selectedBook}
+          onClose={() => {
+            setShowChart(false);
+            setSelectedBook(null);
+          }}
+        />
+      )}
+
+      {filteredBooks.length === 0 && (
+        <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
+          <CardContent className="p-12 text-center">
+            <BookOpen className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">책이 없습니다</h3>
+            <p className="text-gray-400">
+              {searchTerm || filterStatus !== "all" ? "검색 조건에 맞는 책이 없어요" : "아직 서재에 책이 없어요"}
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -66,11 +67,23 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Content */}
-        <div className="max-w-6xl mx-auto">
-          {activeTab === "search" && <BookSearch />}
-          {activeTab === "shelf" && <BookShelf />}
-          {activeTab === "progress" && <ReadingProgress />}
+        {/* Content with animation */}
+        <div className="max-w-6xl mx-auto relative">
+          <div className={`transition-all duration-500 ease-in-out ${
+            activeTab === "search" ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4 absolute inset-0 pointer-events-none"
+          }`}>
+            {activeTab === "search" && <BookSearch />}
+          </div>
+          <div className={`transition-all duration-500 ease-in-out ${
+            activeTab === "shelf" ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4 absolute inset-0 pointer-events-none"
+          }`}>
+            {activeTab === "shelf" && <BookShelf />}
+          </div>
+          <div className={`transition-all duration-500 ease-in-out ${
+            activeTab === "progress" ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4 absolute inset-0 pointer-events-none"
+          }`}>
+            {activeTab === "progress" && <ReadingProgress />}
+          </div>
         </div>
 
         <footer className="w-full text-center text-xs text-gray-300 flex flex-col items-center justify-center px-4 py-4 mt-8" style={{ fontFamily: 'Pretendard, sans-serif' }}>
