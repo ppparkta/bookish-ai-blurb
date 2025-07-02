@@ -2,6 +2,14 @@
 
 > [배포 URL](https://bookish-ai-blurb.lovable.app/)
 
+## 프로토타입
+<img width="700" alt="스크린샷 2025-07-02 오전 11 02 44" src="https://github.com/user-attachments/assets/7c43d62f-4391-4ef2-9312-6dae3e1e9cfe" />
+<img width="700" alt="스크린샷 2025-07-02 오전 11 02 57" src="https://github.com/user-attachments/assets/81d4e9a0-9e60-4241-888d-fa586df83e59" />
+<img width="700" alt="스크린샷 2025-07-02 오전 11 03 18" src="https://github.com/user-attachments/assets/3a40a946-1c39-4c98-83e4-24e88fb7be47" />
+<img width="700" alt="스크린샷 2025-07-02 오전 11 03 40" src="https://github.com/user-attachments/assets/c426e3df-c779-457d-b4df-fe159037c0c4" />
+
+---
+
 ## 페르소나
 
 ### 22세 대학생 김지현
