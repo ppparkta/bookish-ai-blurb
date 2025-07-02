@@ -3,10 +3,18 @@
 > [배포 URL](https://bookish-ai-blurb.lovable.app/)
 
 ## 프로토타입
-<img width="700" alt="스크린샷 2025-07-02 오전 11 02 44" src="https://github.com/user-attachments/assets/7c43d62f-4391-4ef2-9312-6dae3e1e9cfe" />
-<img width="700" alt="스크린샷 2025-07-02 오전 11 02 57" src="https://github.com/user-attachments/assets/81d4e9a0-9e60-4241-888d-fa586df83e59" />
-<img width="700" alt="스크린샷 2025-07-02 오전 11 03 18" src="https://github.com/user-attachments/assets/3a40a946-1c39-4c98-83e4-24e88fb7be47" />
-<img width="700" alt="스크린샷 2025-07-02 오전 11 03 40" src="https://github.com/user-attachments/assets/c426e3df-c779-457d-b4df-fe159037c0c4" />
+
+> update 25.07.02 (ver0.30)
+> 
+사용자 피드백을 반영하여 다양한 기능을 추가했어요!
+
+<img width="1440" alt="스크린샷 2025-07-02 오후 4 02 55" src="https://github.com/user-attachments/assets/2a6057fc-075c-4990-84fa-0f9e11b45989" />
+<img width="1440" alt="스크린샷 2025-07-02 오후 3 58 50" src="https://github.com/user-attachments/assets/60759b93-7e81-48a7-8c0d-bf76566eb3ff" />
+<img width="1440" alt="스크린샷 2025-07-02 오후 4 00 57" src="https://github.com/user-attachments/assets/08330012-2273-4130-8a8f-eb7683b2a0bd" />
+<img width="1440" alt="스크린샷 2025-07-02 오후 3 59 09" src="https://github.com/user-attachments/assets/caa547d1-f51b-4da9-b252-5f471053be8a" />
+<img width="1440" alt="스크린샷 2025-07-02 오후 3 59 36" src="https://github.com/user-attachments/assets/f3035ed6-1852-4f59-abdf-bf8497b68c46" />
+<img width="1440" alt="스크린샷 2025-07-02 오후 3 59 59" src="https://github.com/user-attachments/assets/6e6b3f0c-56ef-41cf-b79a-dcc0107f88a0" />
+<img width="1440" alt="스크린샷 2025-07-02 오후 4 00 13" src="https://github.com/user-attachments/assets/54eaf7ab-7d17-4a54-bb0b-6a232c43f78b" />
 
 ---
 
