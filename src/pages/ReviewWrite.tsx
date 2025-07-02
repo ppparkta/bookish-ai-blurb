@@ -24,12 +24,7 @@ interface Book {
   readCount?: number;
 }
 
-interface ReviewWriteProps {
-  onReviewSaved?: (review: any) => void;
-  onBookCompleted?: (bookId: number) => void;
-}
-
-const ReviewWrite = ({ onReviewSaved, onBookCompleted }: ReviewWriteProps) => {
+const ReviewWrite = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const book = location.state?.book as Book;
@@ -144,9 +139,6 @@ ${formData.isIntermediate ? "아직 완독하지는 않았지만, " : ""}읽기 
   };
 
   const handleComplete = () => {
-    if (onBookCompleted && book) {
-      onBookCompleted(book.id);
-    }
     toast({
       title: "완독 완료! 🎉",
       description: `"${book?.title}"를 완독하셨네요! 축하드려요`,
@@ -157,29 +149,11 @@ ${formData.isIntermediate ? "아직 완독하지는 않았지만, " : ""}읽기 
   };
 
   const handleSave = () => {
-    const reviewData = {
-      id: Date.now(),
-      bookId: book?.id,
-      type: formData.isIntermediate ? "중간독후감" : "완독",
-      date: new Date().toISOString().split('T')[0],
-      rating: formData.rating[0],
-      content: formData.generatedReview || formData.thoughts,
-      emotions: formData.emotions,
-      quote: formData.favoriteQuote,
-      category: formData.category,
-      readCount: formData.readCount
-    };
-
-    if (onReviewSaved) {
-      onReviewSaved(reviewData);
-    }
-
     const reviewType = formData.isIntermediate ? "중간 독후감" : "독후감";
     toast({
       title: `${reviewType}이 저장되었어요! 📚`,
       description: `"${book?.title}"의 ${reviewType}이 내 서재에 저장되었습니다`,
     });
-    
     // 임시저장 데이터 삭제
     localStorage.removeItem(`review-draft-${book?.id}`);
     navigate('/');
@@ -312,8 +286,8 @@ ${formData.isIntermediate ? "아직 완독하지는 않았지만, " : ""}읽기 
                       onClick={() => handleEmotionToggle(emotion)}
                       className={`text-sm transition-all border-gray-700 ${
                         formData.emotions.includes(emotion)
-                          ? "bg-gray-700 text-white border-gray-600"
-                          : "text-black hover:bg-gray-800 hover:text-white"
+                          ? "bg-gray-700 text-black border-gray-600"
+                          : "text-black hover:bg-gray-800 hover:text-black"
                       }`}
                     >
                       {emotion}

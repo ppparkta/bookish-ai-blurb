@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,15 +24,50 @@ interface Book {
   readCount?: number;
 }
 
-interface BookShelfProps {
-  books: Book[];
-  onUpdateBooks: (books: Book[]) => void;
-}
-
-const BookShelf = ({ books, onUpdateBooks }: BookShelfProps) => {
+const BookShelf = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
+  const [books, setBooks] = useState<Book[]>([
+    {
+      id: 1,
+      title: "미드나이트 라이브러리",
+      author: "매트 헤이그",
+      cover: "/placeholder.svg",
+      status: "reading",
+      totalPages: 320,
+      currentPage: 208,
+      hasReview: false,
+      category: "소설",
+      readCount: 1
+    },
+    {
+      id: 2,
+      title: "아몬드",
+      author: "손원평",
+      cover: "/placeholder.svg",
+      status: "completed",
+      totalPages: 267,
+      currentPage: 267,
+      rating: 4.5,
+      hasReview: true,
+      category: "소설",
+      readCount: 1
+    },
+    {
+      id: 3,
+      title: "달러구트 꿈 백화점",
+      author: "이미예",
+      cover: "/placeholder.svg",
+      status: "want-to-read",
+      totalPages: 284,
+      currentPage: 0,
+      hasReview: false,
+      category: "소설",
+      readCount: 1
+    },
+  ]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("recent");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -61,10 +95,9 @@ const BookShelf = ({ books, onUpdateBooks }: BookShelfProps) => {
     });
 
   const handleStartReading = (book: Book) => {
-    const updatedBooks = books.map(b => 
+    setBooks(books.map(b => 
       b.id === book.id ? { ...b, status: "reading" as const } : b
-    );
-    onUpdateBooks(updatedBooks);
+    ));
     toast({
       title: "읽기 시작! 📖",
       description: `"${book.title}" 읽기를 시작했어요`,
@@ -72,10 +105,9 @@ const BookShelf = ({ books, onUpdateBooks }: BookShelfProps) => {
   };
 
   const handleComplete = (book: Book) => {
-    const updatedBooks = books.map(b => 
+    setBooks(books.map(b => 
       b.id === book.id ? { ...b, status: "completed" as const, currentPage: b.totalPages } : b
-    );
-    onUpdateBooks(updatedBooks);
+    ));
     toast({
       title: "완독 완료! 🎉",
       description: `"${book.title}"를 완독하셨네요! 축하드려요`,
@@ -83,10 +115,9 @@ const BookShelf = ({ books, onUpdateBooks }: BookShelfProps) => {
   };
 
   const handleProgressUpdate = (bookId: number, newPage: number) => {
-    const updatedBooks = books.map(book => 
+    setBooks(books.map(book => 
       book.id === bookId ? { ...book, currentPage: newPage } : book
-    );
-    onUpdateBooks(updatedBooks);
+    ));
     setShowProgressModal(false);
   };
 
@@ -188,11 +219,7 @@ const BookShelf = ({ books, onUpdateBooks }: BookShelfProps) => {
                   <img
                     src={book.cover}
                     alt={book.title}
-                    className={`w-20 h-28 object-cover rounded shadow-lg ${
-                      book.status === "reading" || book.status === "completed" 
-                        ? "cursor-pointer" 
-                        : ""
-                    }`}
+                    className="w-20 h-28 object-cover rounded shadow-lg cursor-pointer"
                     onClick={() => (book.status === "reading" || book.status === "completed") && handleViewReviews(book)}
                   />
                   {book.hasReview && (
@@ -205,11 +232,7 @@ const BookShelf = ({ books, onUpdateBooks }: BookShelfProps) => {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
                       <h3 
-                        className={`font-semibold text-white truncate ${
-                          book.status === "reading" || book.status === "completed"
-                            ? "group-hover:text-lime-300 transition-colors cursor-pointer"
-                            : ""
-                        }`}
+                        className="font-semibold text-white group-hover:text-lime-300 transition-colors truncate cursor-pointer"
                         onClick={() => (book.status === "reading" || book.status === "completed") && handleViewReviews(book)}
                       >
                         {book.title}

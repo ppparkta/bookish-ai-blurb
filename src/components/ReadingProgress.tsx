@@ -1,252 +1,250 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen, TrendingUp, Target, Award, Calendar, Star } from "lucide-react";
+import { TrendingUp, Clock, Target, BookOpen, CheckCircle } from "lucide-react";
 
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  cover: string;
-  status: "want-to-read" | "reading" | "completed";
-  totalPages: number;
-  currentPage: number;
-  rating?: number;
-  hasReview: boolean;
-  category?: string;
-  readCount?: number;
-}
+const ReadingProgress = () => {
+  // 실제 완독한 책들 데이터
+  const completedBooks = [
+    { title: "달러구트 꿈 백화점", pages: 284, width: 180 },
+    { title: "아몬드", pages: 267, width: 220 },
+    { title: "어린왕자", pages: 142, width: 160 },
+    { title: "미움받을 용기", pages: 295, width: 200 },
+    { title: "코스모스", pages: 478, width: 240 },
+    { title: "1984", pages: 350, width: 190 },
+    { title: "해리포터와 마법사의 돌", pages: 423, width: 210 },
+    { title: "데미안", pages: 201, width: 170 },
+  ];
 
-interface ReadingProgressProps {
-  books: Book[];
-}
+  // 총 완독 페이지 계산
+  const totalCompletedPages = completedBooks.reduce((sum, book) => sum + book.pages, 0);
 
-const ReadingProgress = ({ books }: ReadingProgressProps) => {
-  const currentlyReading = books.filter(book => book.status === "reading");
-  const completedBooks = books.filter(book => book.status === "completed");
-  const wantToRead = books.filter(book => book.status === "want-to-read");
-
-  const totalPagesRead = books.reduce((total, book) => total + book.currentPage, 0);
-  const completedPagesFromCompletedBooks = completedBooks.reduce((total, book) => total + book.totalPages, 0);
-  const averageRating = completedBooks.filter(book => book.rating).reduce((sum, book) => sum + (book.rating || 0), 0) / completedBooks.filter(book => book.rating).length || 0;
-
-  const thisYearGoal = 24;
-  const completionRate = (completedBooks.length / thisYearGoal) * 100;
-
-  const getBookGradient = (index: number) => {
-    const gradients = [
-      "from-blue-400/20 via-purple-400/30 to-pink-400/20",
-      "from-emerald-400/20 via-teal-400/30 to-cyan-400/20",
-      "from-lime-400/20 via-green-400/30 to-emerald-400/20",
-      "from-orange-400/20 via-red-400/30 to-pink-400/20",
-      "from-violet-400/20 via-purple-400/30 to-indigo-400/20",
-      "from-rose-400/20 via-pink-400/30 to-purple-400/20"
-    ];
-    return gradients[index % gradients.length];
+  const readingStats = {
+    booksThisMonth: 3,
+    totalBooks: completedBooks.length,
+    monthlyGoal: 4,
+    averagePages: Math.round(totalCompletedPages / completedBooks.length),
+    totalPages: totalCompletedPages, // 실제 완독 페이지와 동일하게
+    readingStreak: 7
   };
+
+  const currentReading = [
+    {
+      title: "미드나이트 라이브러리",
+      progress: 65,
+      pagesRead: 208,
+      totalPages: 320,
+      daysReading: 5
+    },
+    {
+      title: "보건교사 안은영",
+      progress: 23,
+      pagesRead: 91,
+      totalPages: 396,
+      daysReading: 2
+    }
+  ];
+
+  // 책 색상은 무채색 계열로 제한하되 일부는 연두색
+  const grayColors = ['#2a2a2a', '#404040', '#525252', '#666666', '#737373', '#8a8a8a', '#a3a3a3', '#b8b8b8', '#3a3a3a', '#4d4d4d'];
+  const greenColors = ['#84cc16', '#65a30d'];
+
+  // 해시 함수(책 제목+페이지수로 고정된 숫자 생성)
+  function getHash(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash);
+  }
+
+  // 책별 색상 결정 (일부는 연두색)
+  function getBookColor(title: string, pages: number, index: number): string {
+    // 첫 번째와 세 번째 책을 연두색으로
+    if (index === 0 || index === 2) {
+      const greenIdx = getHash(title + pages + 'green') % greenColors.length;
+      return greenColors[greenIdx];
+    }
+    const grayIdx = getHash(title + pages + 'gray') % grayColors.length;
+    return grayColors[grayIdx];
+  }
+
+  // 책별 랜덤 크기 생성 (폭)
+  function getBookWidth(title: string, pages: number): number {
+    const hash = getHash(title + pages + 'width');
+    return 160 + (hash % 100); // 160~260px 범위
+  }
 
   return (
     <div className="space-y-6">
-      {/* 전체 통계 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Monthly Stats */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">총 읽은 페이지</p>
-                <p className="text-2xl font-bold text-white">{totalPagesRead.toLocaleString()}</p>
-              </div>
-              <BookOpen className="w-8 h-8 text-lime-400" />
+          <CardContent className="p-4 text-center">
+            <div className="text-3xl font-bold text-white mb-2">{readingStats.booksThisMonth}</div>
+            <div className="text-gray-300 text-sm flex items-center justify-center gap-1">
+              <BookOpen className="w-4 h-4" />
+              이번 달 완독
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">읽는 중</p>
-                <p className="text-2xl font-bold text-white">{currentlyReading.length}권</p>
-              </div>
-              <TrendingUp className="w-8 h-8 text-blue-400" />
+          <CardContent className="p-4 text-center">
+            <div className="text-3xl font-bold text-white mb-2">{readingStats.readingStreak}</div>
+            <div className="text-gray-300 text-sm flex items-center justify-center gap-1">
+              <Target className="w-4 h-4" />
+              연속 독서일
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">완독한 책</p>
-                <p className="text-2xl font-bold text-white">{completedBooks.length}권</p>
-              </div>
-              <Award className="w-8 h-8 text-purple-400" />
+          <CardContent className="p-4 text-center">
+            <div className="text-3xl font-bold text-white mb-2">{readingStats.totalPages.toLocaleString()}</div>
+            <div className="text-gray-300 text-sm flex items-center justify-center gap-1">
+              <TrendingUp className="w-4 h-4" />
+              총 읽은 페이지
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">평균 별점</p>
-                <p className="text-2xl font-bold text-white">{averageRating.toFixed(1)}</p>
-              </div>
-              <Star className="w-8 h-8 text-yellow-400" />
+          <CardContent className="p-4 text-center">
+            <div className="text-3xl font-bold text-white mb-2">{readingStats.averagePages}</div>
+            <div className="text-gray-300 text-sm flex items-center justify-center gap-1">
+              <Clock className="w-4 h-4" />
+              평균 페이지수
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* 올해 목표 */}
+      {/* Monthly Goal */}
       <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
-            <Target className="w-5 h-5 text-lime-400" />
-            2024년 독서 목표
+            <Target className="w-5 h-5" />
+            이번 달 목표
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-300">완독률</span>
-            <span className="text-white font-semibold">{completedBooks.length}/{thisYearGoal}권 ({completionRate.toFixed(1)}%)</span>
-          </div>
-          <Progress value={completionRate} className="h-3 bg-gray-700">
-            <div 
-              className="bg-gradient-to-r from-lime-500 to-green-500 h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(completionRate, 100)}%` }}
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <div className="flex justify-between text-white">
+              <span>월간 독서 목표</span>
+              <span className="font-semibold">{readingStats.booksThisMonth} / {readingStats.monthlyGoal} 권</span>
+            </div>
+            <Progress 
+              value={(readingStats.booksThisMonth / readingStats.monthlyGoal) * 100} 
+              className="h-3 bg-gray-700 [&_.bg-primary]:bg-gradient-to-r [&_.bg-primary]:from-lime-500 [&_.bg-primary]:to-green-500"
             />
-          </Progress>
-          <p className="text-sm text-gray-400">
-            {thisYearGoal - completedBooks.length > 0 
-              ? `목표까지 ${thisYearGoal - completedBooks.length}권 남았어요!` 
-              : "목표를 달성했어요! 🎉"}
+            <p className="text-gray-300 text-sm">
+              {readingStats.monthlyGoal - readingStats.booksThisMonth > 0 
+                ? `목표까지 ${readingStats.monthlyGoal - readingStats.booksThisMonth}권 남았어요! 💪`
+                : "이번 달 목표를 달성했어요! 🎉"
+              }
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Book Stack Visualization - 세로 스크롤, 가로 눕힌 책들 */}
+      <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
+        <CardHeader>
+          <CardTitle className="text-white flex items-center gap-2">
+            <BookOpen className="w-5 h-5" />
+            완독한 책들 ({completedBooks.length}권)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="max-h-96 overflow-y-auto">
+            <div className="flex flex-col items-center space-y-1">
+              {completedBooks.map((book, index) => {
+                const bookHeight = Math.max(book.pages / 8, 20); // 책 두께 계산 
+                const bookWidth = getBookWidth(book.title, book.pages); // 랜덤 너비
+                const bookColor = getBookColor(book.title, book.pages, index);
+                return (
+                  <div
+                    key={index}
+                    className="relative group cursor-pointer transform hover:scale-[1.02] transition-all duration-300"
+                    style={{ 
+                      height: `${bookHeight}px`,
+                      width: `${bookWidth}px`,
+                      maxWidth: '280px'
+                    }}
+                  >
+                    {/* 가로로 눕힌 책 모양 */}
+                    <div
+                      className="w-full h-full rounded-r-sm shadow-lg relative overflow-hidden flex items-center"
+                      style={{ backgroundColor: bookColor }}
+                    >
+                      {/* 책 제목 (가로로) */}
+                      <div className="absolute inset-0 flex items-center px-4">
+                        <div className="text-sm font-semibold truncate flex-1 text-white">
+                          {book.title}
+                        </div>
+                        <div className="text-white/80 text-xs ml-4">
+                          {book.pages}p
+                        </div>
+                      </div>
+                      {/* 책등 효과 (오른쪽) */}
+                      <div className="absolute right-0 top-0 w-1 h-full bg-black/30"></div>
+                      {/* 책 그림자 효과 (아래쪽) */}
+                      <div className="absolute bottom-0 left-0 w-full h-1 bg-black/20"></div>
+                    </div>
+                    {/* 호버 툴팁 */}
+                    <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                      <div className="bg-white text-black text-xs rounded px-2 py-1 whitespace-nowrap shadow-lg">
+                        {book.title}<br />
+                        {book.pages}페이지
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <p className="text-gray-300 text-sm mt-4 text-center">
+            총 {totalCompletedPages.toLocaleString()}페이지를 읽었어요! 📚
           </p>
         </CardContent>
       </Card>
 
-      {/* 현재 읽고 있는 책들 */}
-      {currentlyReading.length > 0 && (
-        <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-blue-400" />
-              현재 읽고 있는 책들
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {currentlyReading.map((book) => (
-              <div key={book.id} className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/30">
-                <div className="flex gap-4">
-                  <img
-                    src={book.cover}
-                    alt={book.title}
-                    className="w-16 h-24 object-cover rounded shadow-md"
-                  />
-                  <div className="flex-1 space-y-2">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-semibold text-white">{book.title}</h3>
-                        <p className="text-gray-300 text-sm">{book.author}</p>
-                      </div>
-                      <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/30">
-                        읽는 중
-                      </Badge>
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">진행률</span>
-                        <span className="text-white">{book.currentPage}/{book.totalPages} 페이지 ({Math.round((book.currentPage / book.totalPages) * 100)}%)</span>
-                      </div>
-                      <Progress value={(book.currentPage / book.totalPages) * 100} className="h-2 bg-gray-700">
-                        <div 
-                          className="bg-gradient-to-r from-lime-500 to-green-500 h-full rounded-full transition-all duration-500"
-                          style={{ width: `${(book.currentPage / book.totalPages) * 100}%` }}
-                        />
-                      </Progress>
-                    </div>
+      {/* Current Reading */}
+      <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
+        <CardHeader>
+          <CardTitle className="text-white flex items-center gap-2">
+            <BookOpen className="w-5 h-5" />
+            현재 읽고 있는 책
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-6">
+            {currentReading.map((book, index) => (
+              <div key={index} className="bg-gray-800/50 rounded-lg p-4 space-y-3 border border-gray-700/30">
+                <div className="flex justify-between items-start">
+                  <h3 className="font-semibold text-white text-lg">{book.title}</h3>
+                  <span className="text-gray-300 text-sm">{book.daysReading}일째 읽는 중</span>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm text-gray-300">
+                    <span>읽기 진행률</span>
+                    <span className="text-white font-medium">{book.pagesRead} / {book.totalPages} 페이지 ({book.progress}%)</span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-lime-500 to-green-500 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${book.progress}%` }}
+                    ></div>
                   </div>
                 </div>
               </div>
             ))}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* 완독한 책들 */}
-      {completedBooks.length > 0 && (
-        <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Award className="w-5 h-5 text-purple-400" />
-              완독한 책들
-              <Badge variant="outline" className="bg-purple-500/10 text-purple-400 border-purple-500/30">
-                총 {completedPagesFromCompletedBooks.toLocaleString()}페이지를 읽었어요!
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-              {completedBooks.map((book, index) => (
-                <div 
-                  key={book.id} 
-                  className={`relative group cursor-pointer transition-all duration-300 hover:scale-105`}
-                >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${getBookGradient(index)} backdrop-blur-sm rounded-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
-                  <div className="relative bg-gray-800/30 backdrop-blur-sm rounded-lg p-3 border border-gray-700/20 hover:border-gray-600/40 transition-all duration-300">
-                    <img
-                      src={book.cover}
-                      alt={book.title}
-                      className="w-full h-32 object-cover rounded mb-2 shadow-lg"
-                    />
-                    <h4 className="text-white text-xs font-medium line-clamp-2 mb-1">{book.title}</h4>
-                    <p className="text-gray-400 text-xs line-clamp-1 mb-2">{book.author}</p>
-                    {book.rating && (
-                      <div className="flex items-center gap-1">
-                        <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                        <span className="text-xs text-yellow-400">{book.rating}</span>
-                      </div>
-                    )}
-                    {book.hasReview && (
-                      <Badge variant="outline" className="bg-lime-500/10 text-lime-400 border-lime-500/30 text-xs mt-1">
-                        독후감 작성완료
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* 읽고 싶은 책들 */}
-      {wantToRead.length > 0 && (
-        <Card className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-gray-400" />
-              읽고 싶은 책들
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-              {wantToRead.map((book) => (
-                <div key={book.id} className="bg-gray-800/50 rounded-lg p-3 border border-gray-700/30">
-                  <img
-                    src={book.cover}
-                    alt={book.title}
-                    className="w-full h-32 object-cover rounded mb-2 shadow-md"
-                  />
-                  <h4 className="text-white text-xs font-medium line-clamp-2 mb-1">{book.title}</h4>
-                  <p className="text-gray-400 text-xs line-clamp-1">{book.author}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
