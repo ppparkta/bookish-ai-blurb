@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -49,8 +48,8 @@ const ProgressUpdateModal = ({ book, onClose, onUpdate }: ProgressUpdateModalPro
   const progressPercentage = Math.round((parseInt(currentPage) || 0) / book.totalPages * 100);
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <Card className="bg-gray-900/95 backdrop-blur-lg border border-gray-700/50 shadow-2xl w-full max-w-md">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center min-h-screen p-0 z-50">
+      <Card className="bg-gray-900/95 backdrop-blur-lg border border-gray-700/50 shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-gray-700/30">
           <CardTitle className="text-xl flex items-center gap-2 text-white">
             <TrendingUp className="w-5 h-5 text-lime-400" />

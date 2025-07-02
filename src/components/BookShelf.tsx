@@ -66,6 +66,93 @@ const BookShelf = () => {
       category: "소설",
       readCount: 1
     },
+    {
+      id: 4,
+      title: "보건교사 안은영",
+      author: "정세랑",
+      cover: "/placeholder.svg",
+      status: "reading",
+      totalPages: 396,
+      currentPage: 91,
+      hasReview: false,
+      category: "판타지",
+      readCount: 1
+    },
+    {
+      id: 5,
+      title: "코스모스",
+      author: "칼 세이건",
+      cover: "/placeholder.svg",
+      status: "completed",
+      totalPages: 478,
+      currentPage: 478,
+      rating: 5,
+      hasReview: true,
+      category: "과학",
+      readCount: 2
+    },
+    {
+      id: 6,
+      title: "1984",
+      author: "조지 오웰",
+      cover: "/placeholder.svg",
+      status: "completed",
+      totalPages: 350,
+      currentPage: 350,
+      rating: 4,
+      hasReview: true,
+      category: "고전",
+      readCount: 1
+    },
+    {
+      id: 7,
+      title: "해리포터와 마법사의 돌",
+      author: "J.K. 롤링",
+      cover: "/placeholder.svg",
+      status: "reading",
+      totalPages: 423,
+      currentPage: 120,
+      hasReview: false,
+      category: "판타지",
+      readCount: 3
+    },
+    {
+      id: 8,
+      title: "데미안",
+      author: "헤르만 헤세",
+      cover: "/placeholder.svg",
+      status: "want-to-read",
+      totalPages: 201,
+      currentPage: 0,
+      hasReview: false,
+      category: "고전",
+      readCount: 1
+    },
+    {
+      id: 9,
+      title: "미움받을 용기",
+      author: "기시미 이치로",
+      cover: "/placeholder.svg",
+      status: "completed",
+      totalPages: 295,
+      currentPage: 295,
+      rating: 4.2,
+      hasReview: true,
+      category: "자기계발",
+      readCount: 1
+    },
+    {
+      id: 10,
+      title: "죽음에 관하여",
+      author: "엘리자베스 퀴블러 로스",
+      cover: "/placeholder.svg",
+      status: "want-to-read",
+      totalPages: 320,
+      currentPage: 0,
+      hasReview: false,
+      category: "인문학",
+      readCount: 1
+    }
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -245,7 +332,7 @@ const BookShelf = () => {
                           </Badge>
                         )}
                         {book.readCount && book.readCount > 1 && (
-                          <Badge variant="outline" className="bg-purple-800/50 text-purple-300 border-purple-600 text-xs">
+                          <Badge variant="outline" className="bg-gray-700/70 text-gray-200 border-gray-500 text-xs">
                             {book.readCount}회독
                           </Badge>
                         )}

@@ -1,11 +1,11 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ChevronDown, ChevronRight, BookOpen, Star, Calendar, Palette } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import html2canvas from "html2canvas";
 
 interface Book {
   id: number;
@@ -25,6 +25,17 @@ interface Review {
   emotions: string[];
   quote?: string;
 }
+
+const getVibeColor = () => {
+  const colors = [
+    "from-pink-500 to-purple-500",
+    "from-blue-500 to-cyan-500", 
+    "from-green-500 to-lime-500",
+    "from-orange-500 to-red-500",
+    "from-purple-500 to-pink-500"
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
 
 const MyReviews = () => {
   const navigate = useNavigate();
@@ -55,23 +66,19 @@ const MyReviews = () => {
     }
   ];
 
+  // vibeColor를 고정 상태로 관리
+  const [vibeColor, setVibeColor] = useState(getVibeColor());
+  // reviews 배열이 바뀔 때만 vibeColor를 새로 뽑음
+  useEffect(() => {
+    setVibeColor(getVibeColor());
+  }, [JSON.stringify(reviews)]);
+
   const toggleReview = (reviewId: number) => {
     setOpenReviews(prev => 
       prev.includes(reviewId) 
         ? prev.filter(id => id !== reviewId)
         : [...prev, reviewId]
     );
-  };
-
-  const getVibeColor = () => {
-    const colors = [
-      "from-pink-500 to-purple-500",
-      "from-blue-500 to-cyan-500", 
-      "from-green-500 to-lime-500",
-      "from-orange-500 to-red-500",
-      "from-purple-500 to-pink-500"
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
   };
 
   const getVibeMessage = () => {
@@ -84,6 +91,25 @@ const MyReviews = () => {
     ];
     return messages[Math.floor(Math.random() * messages.length)];
   };
+
+  const tailwindColorMap: Record<string, string> = {
+    'from-pink-500': '#ec4899',
+    'to-purple-500': '#a21caf',
+    'from-blue-500': '#3b82f6',
+    'to-cyan-500': '#06b6d4',
+    'from-green-500': '#22c55e',
+    'to-lime-500': '#84cc16',
+    'from-orange-500': '#f97316',
+    'to-red-500': '#ef4444',
+    'from-purple-500': '#a21caf',
+    'to-pink-500': '#ec4899',
+  };
+
+  function getVibeGradientHex() {
+    const vibe = getVibeColor();
+    const [from, to] = vibe.split(' ');
+    return [tailwindColorMap[from] || '#a8edea', tailwindColorMap[to] || '#fed6e3'];
+  }
 
   if (!book) {
     return null;
@@ -110,7 +136,7 @@ const MyReviews = () => {
           <Card className="bg-gray-900/90 backdrop-blur-lg border border-gray-700/50 shadow-2xl mb-8">
             <CardContent className="p-8">
               <div className="text-center space-y-6">
-                <div className={`w-32 h-32 mx-auto rounded-full bg-gradient-to-br ${getVibeColor()} animate-pulse flex items-center justify-center`}>
+                <div className={`w-32 h-32 mx-auto rounded-full bg-gradient-to-br ${vibeColor} animate-pulse flex items-center justify-center`}>
                   <Palette className="w-12 h-12 text-white" />
                 </div>
                 <div>
@@ -188,7 +214,7 @@ const MyReviews = () => {
                           )}
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="flex gap-1">
+                          <div className="flex gap-1 hidden sm:flex">
                             {review.emotions.slice(0, 3).map((emotion, index) => (
                               <span key={index} className="text-xs bg-gray-700 px-2 py-1 rounded">
                                 {emotion.split(' ')[0]}
@@ -208,8 +234,10 @@ const MyReviews = () => {
                     <CardContent className="pt-0 pb-6 px-6">
                       <div className="space-y-4">
                         {review.quote && (
-                          <div className="bg-gray-800/50 p-4 rounded-lg border-l-4 border-lime-500">
-                            <p className="text-gray-300 italic">"{review.quote}"</p>
+                          <div className="bg-gray-800/50 p-4 rounded-lg border-l-4 border-lime-500 space-y-2">
+                            <p className="text-gray-300 italic" style={{wordBreak: 'break-all'}}>
+                              "{review.quote}"
+                            </p>
                           </div>
                         )}
                         <div className="prose prose-invert max-w-none">

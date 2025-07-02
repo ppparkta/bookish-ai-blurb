@@ -51,6 +51,69 @@ const BookSearch = () => {
       publisher: "민음사",
       pubdate: "2015-03-20",
       description: "학교에서 벌어지는 초자연적 현상을 다루는 보건교사의 이야기"
+    },
+    {
+      isbn: "9788972756194",
+      title: "코스모스",
+      author: "칼 세이건",
+      cover: "https://images.unsplash.com/photo-1464983953574-0892a716854b?w=200&h=300&fit=crop",
+      publisher: "사이언스북스",
+      pubdate: "2001-12-01",
+      description: "우주와 인간에 대한 경이로운 통찰을 담은 과학 명저"
+    },
+    {
+      isbn: "9780141036144",
+      title: "1984",
+      author: "조지 오웰",
+      cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&h=300&fit=crop",
+      publisher: "Penguin",
+      pubdate: "2008-07-01",
+      description: "전체주의의 위험성을 경고하는 디스토피아 소설"
+    },
+    {
+      isbn: "9781408855652",
+      title: "해리포터와 마법사의 돌",
+      author: "J.K. 롤링",
+      cover: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=200&h=300&fit=crop",
+      publisher: "문학수첩",
+      pubdate: "2014-11-01",
+      description: "마법 세계로의 초대, 해리포터 시리즈의 시작"
+    },
+    {
+      isbn: "9788937460449",
+      title: "데미안",
+      author: "헤르만 헤세",
+      cover: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=200&h=300&fit=crop",
+      publisher: "민음사",
+      pubdate: "2007-10-20",
+      description: "자아를 찾아가는 한 소년의 성장 소설"
+    },
+    {
+      isbn: "9788990982575",
+      title: "미움받을 용기",
+      author: "기시미 이치로",
+      cover: "https://images.unsplash.com/photo-1455885664032-3c620901b5b0?w=200&h=300&fit=crop",
+      publisher: "인플루엔셜",
+      pubdate: "2014-11-10",
+      description: "아들러 심리학을 바탕으로 한 자기계발서"
+    },
+    {
+      isbn: "9788932920345",
+      title: "죽음에 관하여",
+      author: "엘리자베스 퀴블러 로스",
+      cover: "https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?w=200&h=300&fit=crop",
+      publisher: "청림출판",
+      pubdate: "2016-03-15",
+      description: "삶과 죽음에 대한 깊은 통찰을 담은 인문서"
+    },
+    {
+      isbn: "9788936433598",
+      title: "어린왕자",
+      author: "생텍쥐페리",
+      cover: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=200&h=300&fit=crop",
+      publisher: "문학동네",
+      pubdate: "2015-05-20",
+      description: "순수와 사랑, 인생의 본질을 담은 명작 동화"
     }
   ];
 
@@ -98,12 +161,12 @@ const BookSearch = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="flex-1 bg-[#23272f] border-white/20 text-white placeholder:text-gray-300 focus:border-white/40"
+            className="flex-1 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-lime-500"
           />
           <Button 
             onClick={handleSearch}
             disabled={isLoading}
-            className="bg-gray-700 text-white hover:bg-gray-600 shadow-lg"
+            className="bg-gray-700 text-white border border-gray-700 hover:bg-gray-800 shadow-lg"
           >
             <Search className="w-4 h-4 mr-2" />
             {isLoading ? "검색중..." : "검색"}
